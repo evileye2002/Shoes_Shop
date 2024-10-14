@@ -1,0 +1,64 @@
+{% load crispy_forms_tags %}
+
+{% crispy form %}
+
+<div id="user-contact" hx-swap-oob="true" class="space-y-4">
+  {% if user.email %}
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs font-bold">Địa chỉ email</div>
+        <div class="flex items-center gap-2">
+          <div>{{ user.mask_email }}</div>
+          <button data-popover-target="email-popover" type="button">
+            <svg class="text-orange-500 size-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+          </button>
+          <div data-popover id="email-popover" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-fit dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+            <div class="p-3 space-y-2 break-words whitespace-normal">
+              <h3 class="font-semibold text-gray-900 dark:text-white">Địa chỉ email chưa được xác thực</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Xác thực</button>
+    </div>
+  {% else %}
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs font-bold">Địa chỉ email</div>
+        <div class="text-red-500">Chưa cập nhật</div>
+      </div>
+    </div>
+  {% endif %}
+  {% if user.phone %}
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs font-bold">Số điện thoại</div>
+        <div class="flex items-center gap-2">
+          <div>{{ user.mask_phone }}</div>
+          <button data-popover-target="phone-popover" type="button">
+            <svg class="text-orange-500 size-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+            </svg>
+          </button>
+          <div data-popover id="phone-popover" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-fit dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+            <div class="p-3 space-y-2 break-words whitespace-normal">
+              <h3 class="font-semibold text-gray-900 dark:text-white">Số điện thoại chưa được xác thực</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Xác thực</button>
+    </div>
+  {% else %}
+    <div class="flex items-center justify-between">
+      <div>
+        <div class="text-xs font-bold">Số điện thoại</div>
+        <div class="text-red-500">Chưa cập nhật</div>
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+<div id="user-email-dropdown" hx-swap-oob="true" class="truncate">{{ user.email }}</div>

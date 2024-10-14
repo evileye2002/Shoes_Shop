@@ -1,0 +1,40 @@
+{% extends 'account/base.html' %}
+{% load crispy_forms_tags socialaccount %}
+
+{% block content %}
+  <section class="bg-gray-50 dark:bg-gray-900">
+    <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto">
+      <div class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+          <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">Đăng ký tài khoản</h1>
+
+          <form action="{% provider_login_url 'google' %}?next=/" method="post" class="">
+            {% csrf_token %}
+            <button type="submit" class="inline-flex justify-center items-center gap-3 w-full text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+              <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+                <path fill="#4285f4" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M17.64 9.2q-.002-.956-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"></path>
+                <path fill="#34a853" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M9.003 18c2.43 0 4.467-.806 5.956-2.18l-2.909-2.26c-.806.54-1.836.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.44 15.983 5.485 18 9.003 18"></path>
+                <path fill="#fbbc05" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.96H.957C.347 6.175 0 7.55 0 9.002c0 1.452.348 2.827.957 4.042z"></path>
+                <path fill="#ea4335" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.428 0 9.002 0 5.485 0 2.44 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71"></path>
+              </svg>Đăng ký bằng Google
+            </button>
+          </form>
+
+          <div class="flex items-center gap-3">
+            <div class="w-full h-[2px] bg-gray-200"></div>
+            <div class="text-xs font-medium text-gray-500">hoặc</div>
+            <div class="w-full h-[2px] bg-gray-200"></div>
+          </div>
+
+          <form class="space-y-4 md:space-y-6" action="#" method="post">
+            {% crispy form %}
+          </form>
+          <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+            Đã có tài khoản?
+            <a href="{% url 'sign_in' %}" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Đăng nhập ngay</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

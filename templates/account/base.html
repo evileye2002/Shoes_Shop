@@ -1,0 +1,27 @@
+{% extends 'base_layout.html' %}
+{% load breadcrumb_tags %}
+
+{% block body %}
+  <header>
+    {% include 'partials/header.html' %}
+  </header>
+
+  {% if not 'sign' in request.path %}
+    {% show_breadcrumbs breadcrumbs %}
+  {% endif %}
+
+  <main class="">
+    {% block content %}
+
+    {% endblock %}
+  </main>
+
+  <footer class="p-4 bg-white sm:p-6 dark:bg-gray-800">
+    {% include 'partials/footer.html' %}
+  </footer>
+
+  <!-- JS -->
+  {% block script %}
+
+  {% endblock %}
+{% endblock %}

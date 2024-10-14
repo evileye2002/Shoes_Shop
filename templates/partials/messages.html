@@ -1,0 +1,17 @@
+<div id="toasts-container" class="fixed bottom-5 left-5 z-[100] sm:max-w-xs sm:w-full space-y-4">
+  <script>
+    toastsContainer = document.getElementById('toasts-container')
+  </script>
+  {% for m in messages %}
+    <div data-tags="{{ m.tags }}" data-message="{{ m.message }}">
+      <script>
+        ;(function () {
+          var $toast = document.currentScript.parentElement
+          var tags = $toast.getAttribute('data-tags')
+          var message = $toast.getAttribute('data-message')
+          createToast($toast, tags, message)
+        })()
+      </script>
+    </div>
+  {% endfor %}
+</div>

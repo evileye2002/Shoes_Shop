@@ -1,0 +1,28 @@
+{
+  "regions": ["sin1"],
+  "version": 2,
+  "builds": [
+    {
+      "src": "configs/wsgi.py",
+      "use": "@vercel/python",
+      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
+    },
+    {
+      "src": "vercel_build.sh",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "staticfiles"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "configs/wsgi.py"
+    }
+  ]
+}

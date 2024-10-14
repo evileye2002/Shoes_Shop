@@ -1,0 +1,7 @@
+{% load crispy_forms_tags %}
+
+{% crispy form %}
+
+<h2 id="user-fullname" hx-swap-oob="true" class="w-full text-lg font-medium text-center">{{ user.get_full_name }}</h2>
+
+<div id="user-info-dropdown" hx-swap-oob="true" class="font-medium">{{ user.get_full_name }}</div>

@@ -1,0 +1,42 @@
+{% load static constant_tags tailwind_tags %}
+{% get_config_settings as config_settings %}
+{% get_navbar_links as nav_links %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="{{ config_settings.description }}" />
+
+    <link rel="shortcut icon" href="{{ config_settings.shortcute_icon }}" />
+
+    {% if title %}
+      <title>{{ title }} | {{ config_settings.web_name }}</title>
+    {% else %}
+      <title>{{ config_settings.web_name }}</title>
+    {% endif %}
+
+    <!-- CSS -->
+    {% tailwind_css %}
+
+    <!-- JS -->
+    <script src="https://unpkg.com/htmx.org@2.0.2" integrity="sha384-Y7hw+L/jvKeWIRRkqWYfPcvVxHzVzn5REgzbawhxAuQGwX1XWe70vji+VSeHOThJ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flowbite-datepicker@1.3.0/dist/js/datepicker-full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.3.4/dist/js/locales/vi.js"></script>
+
+    <script src="{% static 'js/datepicker.js' %}"></script>
+    <script src="{% static 'js/toasts.js' %}"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+  </head>
+  <body>
+    {% block body %}
+
+    {% endblock %}
+
+    {% include 'partials/messages.html' %}
+
+    <!-- JS -->
+  </body>
+</html>

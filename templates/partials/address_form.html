@@ -1,0 +1,69 @@
+{% if type == "query" %}
+    <datalist id="province_datalist" hx-swap-oob="true">
+        {% for p in province %}
+            <option value="{{ p.full_name }}">
+        {% endfor %}
+    </datalist>
+
+    <datalist id="district_datalist" hx-swap-oob="true">
+        {% for d in district %}
+            <option value="{{ d.full_name }}">
+        {% endfor %}
+    </datalist>
+
+    <datalist id="ward_datalist" hx-swap-oob="true">
+        {% for w in ward %}
+            <option value="{{ w.full_name }}">
+        {% endfor %}
+    </datalist>
+{% else %}
+    {# prettier-ignore #}
+    <form 
+        hx-get="/htmx/search_address" 
+        hx-swap="none" 
+        hx-trigger="input[event.target.matches('input')] from:body delay:1s"
+        class="flex gap-2">
+    {# prettier-ignore #}
+    <div class="">
+        <label for="province" class="block mb-2 text-sm font-bold text-gray-700">Tỉnh/thành phố</label> 
+        <input 
+            class="block w-full px-4 py-2 leading-normal text-gray-700 bg-white border border-gray-300 rounded-lg appearance-none textinput focus:outline-none" 
+            type="text" 
+            id="province" 
+            list="province_datalist"
+            name="province" 
+            autocomplete="off"
+            placeholder="Tỉnh/thành phố"
+        />
+            <datalist id="province_datalist"></datalist>
+        </div>
+    {# prettier-ignore #}
+    <div class="">
+        <label for="district" class="block mb-2 text-sm font-bold text-gray-700">Quận/huyện</label> 
+        <input 
+            class="block w-full px-4 py-2 leading-normal text-gray-700 bg-white border border-gray-300 rounded-lg appearance-none textinput focus:outline-none" 
+            type="text" 
+            id="district" 
+            list="district_datalist"
+            name="district" 
+            autocomplete="off"
+            placeholder="Quận/huyện"
+        />
+            <datalist id="district_datalist"></datalist>
+        </div>
+    {# prettier-ignore #}
+    <div class="">
+        <label for="ward" class="block mb-2 text-sm font-bold text-gray-700">Xã/thị trấn</label> 
+        <input 
+            class="block w-full px-4 py-2 leading-normal text-gray-700 bg-white border border-gray-300 rounded-lg appearance-none textinput focus:outline-none" 
+            type="text" 
+            id="ward" 
+            list="ward_datalist"
+            name="ward" 
+            autocomplete="off"
+            placeholder="Xã/thị trấn"
+        />
+            <datalist id="ward_datalist"></datalist>
+        </div>
+    </form>
+{% endif %}

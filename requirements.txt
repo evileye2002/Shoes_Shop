@@ -1,0 +1,24 @@
+Django
+
+# PLUGINS
+django-allauth
+django-allauth[socialaccount]
+django-environ
+django-tailwind
+django-crispy-forms
+django-shortuuidfield
+django-filter
+django-jazzmin
+django_ckeditor_5
+
+pillow
+crispy-tailwind
+
+# DEPLOY
+psycopg2-binary
+dj-database-url
+django-cloudinary-storage
+
+# DEV
+django-browser-reload
+django-debug-toolbar

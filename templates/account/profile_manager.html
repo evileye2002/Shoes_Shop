@@ -1,0 +1,384 @@
+{% extends 'account/base.html' %}
+{% load crispy_forms_tags socialaccount %}
+{% get_social_accounts user=user as social_accounts %}
+
+{% block content %}
+  <div class="bg-gray-50">
+    <div class="py-8 w-full px-4 md:w-[90%] space-y-4 mx-auto">
+      <div class="flex gap-4">
+        <div class="hidden md:block md:w-[30%]">
+          <div class="sticky top-[90px] space-y-8">
+            <div class="flex flex-wrap justify-center gap-2">
+              {# prettier-ignore #}
+              <button 
+                type="button" 
+                hx-on:click="openModal('update-avatar-modal');"
+                class="overflow-hidden rounded-full ring ring-offset-2 ring-primary-200 size-24">
+                <img id="user-avatar-toggle" class="w-full rounded-full" src="{{ user.avatar.url }}" alt="avatar" />
+              </button>
+              <h2 id="user-fullname" class="w-full text-lg font-medium text-center">{{ user.get_full_name }}</h2>
+            </div>
+
+            <ul class="space-y-4 text-sm font-medium text-gray-900 dark:text-gray-400">
+              <li>
+                <a href="#profile" class="inline-flex items-center w-full px-4 py-3 bg-white rounded-lg shadow dark:border dark:border-gray-600 hover:text-white hover:bg-blue-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                  <svg class="size-5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd" />
+                  </svg>Hồ sơ
+                </a>
+              </li>
+              <li>
+                <a href="#contact" class="inline-flex items-center w-full px-4 py-3 bg-white rounded-lg shadow dark:border dark:border-gray-600 hover:text-white hover:bg-blue-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                  <svg class="size-5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7 3 3 0 0 0-3 3v2a3 3 0 0 0 3 3h1a1 1 0 0 0 1-1V9a5 5 0 1 1 10 0v7.083A2.919 2.919 0 0 1 14.083 19H14a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h1a2 2 0 0 0 1.732-1h.351a4.917 4.917 0 0 0 4.83-4H19a3 3 0 0 0 3-3v-2a3 3 0 0 0-3-3 7 7 0 0 0-7-7Zm1.45 3.275a4 4 0 0 0-4.352.976 1 1 0 0 0 1.452 1.376 2.001 2.001 0 0 1 2.836-.067 1 1 0 1 0 1.386-1.442 4 4 0 0 0-1.321-.843Z" clip-rule="evenodd" />
+                  </svg>Liên hệ
+                </a>
+              </li>
+              <li>
+                <a href="#address" class="inline-flex items-center w-full px-4 py-3 bg-white rounded-lg shadow dark:border dark:border-gray-600 hover:text-white hover:bg-blue-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                  <svg class="size-5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16v-5.5A3.5 3.5 0 0 0 7.5 7m3.5 9H4v-5.5A3.5 3.5 0 0 1 7.5 7m3.5 9v4M7.5 7H14m0 0V4h2.5M14 7v3m-3.5 6H20v-6a3 3 0 0 0-3-3m-2 9v4m-8-6.5h1" />
+                  </svg>Địa chỉ
+                </a>
+              </li>
+              <li>
+                <a href="#link-account" class="inline-flex items-center w-full px-4 py-3 bg-white rounded-lg shadow dark:border dark:border-gray-600 hover:text-white hover:bg-blue-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:border-gray-600">
+                  <svg class="size-5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.213 9.787a3.391 3.391 0 0 0-4.795 0l-3.425 3.426a3.39 3.39 0 0 0 4.795 4.794l.321-.304m-.321-4.49a3.39 3.39 0 0 0 4.795 0l3.424-3.426a3.39 3.39 0 0 0-4.794-4.795l-1.028.961" />
+                  </svg>Liên kết tài khoản
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="w-full md:w-[70%] space-y-4">
+          <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold">Quản lý tài khoản</h1>
+
+            <button hx-on:click="openModal('change-password-modal');" type="button" class="truncate inline-flex items-center gap-2 text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+              <svg class="text-gray-800 size-5 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M8 10V7a4 4 0 1 1 8 0v3h1a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h1Zm2-3a2 2 0 1 1 4 0v3h-4V7Zm2 6a1 1 0 0 1 1 1v3a1 1 0 1 1-2 0v-3a1 1 0 0 1 1-1Z" clip-rule="evenodd" />
+              </svg>Đổi mật khẩu
+            </button>
+          </div>
+
+          <section id="profile" class="p-4 text-gray-900 bg-white rounded-lg shadow md:p-6 text-medium dark:border dark:border-gray-600 dark:text-gray-400 dark:bg-gray-800">
+            <h3 class="mb-2 text-lg font-bold text-gray-900 dark:text-white">Hồ sơ</h3>
+
+            <div class="flex flex-col items-center gap-4 sm:flex-row">
+              {% crispy update_info_form %}
+            </div>
+          </section>
+
+          <section id="contact" class="p-4 text-gray-900 bg-white rounded-lg shadow md:p-6 text-medium dark:border dark:border-gray-600 dark:text-gray-400 dark:bg-gray-800">
+            <h3 class="mb-6 text-lg font-bold text-gray-900 dark:text-white">Liên hệ</h3>
+            <div class="space-y-4">
+              <div id="user-contact" class="space-y-4">
+                {% if user.email %}
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-xs font-bold">Địa chỉ email</div>
+                      <div class="flex items-center gap-2">
+                        <div>{{ user.mask_email }}</div>
+                        <button data-popover-target="email-popover" type="button">
+                          <svg class="text-orange-500 size-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                          </svg>
+                        </button>
+                        <div data-popover id="email-popover" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-fit dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                          <div class="p-3 space-y-2 break-words whitespace-normal">
+                            <h3 class="font-semibold text-gray-900 dark:text-white">Địa chỉ email chưa được xác thực</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Xác thực</button>
+                  </div>
+                {% else %}
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-xs font-bold">Địa chỉ email</div>
+                      <div class="text-red-500">Chưa cập nhật</div>
+                    </div>
+                  </div>
+                {% endif %}
+                {% if user.phone %}
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-xs font-bold">Số điện thoại</div>
+                      <div class="flex items-center gap-2">
+                        <div>{{ user.mask_phone }}</div>
+                        <button data-popover-target="phone-popover" type="button">
+                          <svg class="text-orange-500 size-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+                          </svg>
+                        </button>
+                        <div data-popover id="phone-popover" role="tooltip" class="absolute z-10 invisible inline-block text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-lg shadow-sm opacity-0 w-fit dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400">
+                          <div class="p-3 space-y-2 break-words whitespace-normal">
+                            <h3 class="font-semibold text-gray-900 dark:text-white">Số điện thoại chưa được xác thực</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="button" class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">Xác thực</button>
+                  </div>
+                {% else %}
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <div class="text-xs font-bold">Số điện thoại</div>
+                      <div class="text-red-500">Chưa cập nhật</div>
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="flex items-center justify-end">
+                <button hx-on:click="openModal('update-contact-modal');" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Cập nhật</button>
+              </div>
+            </div>
+          </section>
+
+          <section id="address" class="p-4 text-gray-900 bg-white rounded-lg shadow md:p-6 text-medium dark:border dark:border-gray-600 dark:text-gray-400 dark:bg-gray-800">
+            <h3 class="mb-6 text-lg font-bold text-gray-900 dark:text-white">Địa chỉ</h3>
+
+            <div id="update-address-div" class="space-y-4">
+              {% crispy add_address_form %}
+              {% comment %} {% include 'partials/address_form.html' %} {% endcomment %}
+
+              {% if user_address %}
+                <div class="space-y-2">
+                  {% for address in user_address %}
+                    <div class="flex items-center justify-between">
+                      <span class="w-full truncate">{{ address.address }}</span>
+                      <button hx-on:click="openModal('update-address-modal');" hx-get="{% url 'htmx_update_address' address.id %}" hx-target="#update-address-modal-body" hx-swap="outerHTML" type="button" class="p-1 border border-gray-300 rounded-md hover:bg-gray-100 text-primary-600">
+                        <svg class="size-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.779 17.779 4.36 19.918 6.5 13.5m4.279 4.279 8.364-8.643a3.027 3.027 0 0 0-2.14-5.165 3.03 3.03 0 0 0-2.14.886L6.5 13.5m4.279 4.279L6.499 13.5m2.14 2.14 6.213-6.504M12.75 7.04 17 11.28" />
+                        </svg>
+                      </button>
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+          </section>
+
+          <section id="link-account" class="p-4 text-gray-900 bg-white rounded-lg shadow md:p-6 text-medium dark:border dark:border-gray-600 dark:text-gray-400 dark:bg-gray-800">
+            <h3 class="mb-6 text-lg font-bold text-gray-900 dark:text-white">Liên kết tài khoản</h3>
+        
+            <div class="space-y-4">
+              <div class="flex justify-between">
+                {# prettier-ignore #}
+                <button 
+                  {% if google_acc.0 %}
+                  data-tooltip-target="tooltip-google-linked"
+                  {% endif %}
+                  type="button" 
+                  class="cursor-default inline-flex items-center gap-2 text-gray-900 bg-white border border-gray-300 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600">
+                  <svg class="size-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18">
+                    <path fill="#4285f4" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M17.64 9.2q-.002-.956-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"></path>
+                    <path fill="#34a853" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M9.003 18c2.43 0 4.467-.806 5.956-2.18l-2.909-2.26c-.806.54-1.836.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.44 15.983 5.485 18 9.003 18"></path>
+                    <path fill="#fbbc05" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.96H.957C.347 6.175 0 7.55 0 9.002c0 1.452.348 2.827.957 4.042z"></path>
+                    <path fill="#ea4335" fill-opacity="1" fill-rule="evenodd" stroke="none" d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.428 0 9.002 0 5.485 0 2.44 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71"></path>
+                  </svg>Google
+                </button>
+                {% if google_acc.0 %}
+                  {# prettier-ignore #}
+                  <div 
+                    id="tooltip-google-linked" 
+                    role="tooltip" 
+                    class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                    {{ google_acc.0.extra_data.email }} 
+                    <div class="tooltip-arrow" data-popper-arrow></div>
+                  </div>
+                  {# prettier-ignore #}
+                  <button 
+                    type="button" 
+                    disabled
+                    class="text-gray-800 bg-gray-200 border border-gray-300 focus:outline-none font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600">
+                    Đã liên kết
+                  </button>
+                {% else %}
+                  <form action="{% provider_login_url 'google' process='connect' next='/account' %}" method="post" class="">
+                    {% csrf_token %}
+                    {# prettier-ignore #}
+                    <button 
+                      type="submit" 
+                      class="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                      Liên kết
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </section>
+
+          <section id="delete-account" class="p-4 text-gray-900 bg-white border-2 border-red-400 rounded-lg shadow md:p-6 text-medium dark:text-gray-400 dark:bg-gray-800">
+            <h3 class="mb-6 text-lg font-bold text-gray-900 dark:text-white">Khóa tài khoản</h3>
+            <p class="mb-4">Nếu khóa tài khoản, sau khi quá trình này hoàn tất, bạn sẽ không thể truy cập vào tài khoản này nữa. Vui lòng thận trọng khi thao tác.</p>
+            <div class="flex justify-end">
+              <button data-modal-target="confirm-deactivate-account" data-modal-toggle="confirm-deactivate-account" type="button" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-4 py-1.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Khóa tài khoản</button>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="change-password-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full p-4">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Đổi mật khẩu</h3>
+          <button type="button" class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto dark:hover:bg-gray-600 dark:hover:text-white" hx-on:click="closeModal('change-password-modal');">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        {% crispy change_password_form %}
+      </div>
+    </div>
+  </div>
+
+  <div id="update-contact-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full p-4">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Đổi mật khẩu</h3>
+          <button type="button" class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto dark:hover:bg-gray-600 dark:hover:text-white" hx-on:click="closeModal('update-contact-modal');">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        {% crispy update_contact_form %}
+      </div>
+    </div>
+  </div>
+
+  <div id="update-address-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full p-4">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Cập nhật địa chỉ</h3>
+          <button hx-on:click="closeModal('update-address-modal');" type="button" class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto dark:hover:bg-gray-600 dark:hover:text-white">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div id="update-address-modal-body" class="flex items-center justify-center h-[138px]">
+          <div role="status">
+            <svg aria-hidden="true" class="text-gray-200 size-10 animate-spin dark:text-gray-600 fill-primary-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+              <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+            </svg>
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="update-avatar-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-2xl max-h-full p-4">
+      <!-- Modal content -->
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <!-- Modal header -->
+        <div class="flex items-center justify-between p-4 border-b rounded-t md:p-5 dark:border-gray-600">
+          <h3 class="text-xl font-semibold text-gray-900 dark:text-white">Đổi avatar</h3>
+          <button type="button" class="inline-flex items-center justify-center w-8 h-8 text-sm text-gray-400 bg-transparent rounded-lg hover:bg-gray-200 hover:text-gray-900 ms-auto dark:hover:bg-gray-600 dark:hover:text-white" hx-on:click="closeModal('update-avatar-modal');">
+            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+            </svg>
+            <span class="sr-only">Close modal</span>
+          </button>
+        </div>
+        <!-- Modal body -->
+        <div id="update-avatar-div" class="flex flex-col items-center justify-center p-4 space-y-4">
+          <div class="relative overflow-hidden rounded-full ring ring-offset-2 ring-primary-400 size-60 group">
+            <img id="avatar-preview" class="w-full rounded-full" src="{{ user.avatar.url }}" alt="avatar-preview" />
+            <div class="absolute top-0 rounded-full size-60">
+              <label for="avatar-picker" class="flex-col items-center justify-center hidden font-medium text-white cursor-pointer bg-gray-600/50 size-60 group-hover:flex">
+                <svg class="size-10" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M7.5 4.586A2 2 0 0 1 8.914 4h6.172a2 2 0 0 1 1.414.586L17.914 6H19a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h1.086L7.5 4.586ZM10 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0Zm2-4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" clip-rule="evenodd" />
+                </svg>Chọn avatar
+              </label>
+            </div>
+          </div>
+
+          <p class="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">Định dạng JPEG, PNG, JPG, GIF hoặc WEBP</p>
+          <form class="w-full" enctype="multipart/form-data" hx-post="{% url 'htmx_update_avatar' %}" hx-target="#update-avatar-div" hx-swap="outerHTML" hx-disabled-elt="find #update_avatar_submit">
+            {% csrf_token %}
+            <input onchange="previewAvatar(event)" id="avatar-picker" name="avatar" class="hidden text-xs text-gray-900 border border-gray-300 rounded-lg cursor-pointer w-fit bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file" accept=".jpeg,.jpg,.png,.webp,.gif" />
+            <div class="flex items-center justify-end">
+              <div role="status" class="htmx-indicator">
+                <svg aria-hidden="true" class="text-gray-200 size-5 me-3 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
+                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
+                </svg>
+                <span class="sr-only">Loading...</span>
+              </div>
+              <button id="update_avatar_submit" type="submit" class="disabled:bg-primary-400 disabled:cursor-not-allowed cursor-pointer text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-4 py-1.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Cập nhật</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-deactivate-account" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full p-4">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-hide="confirm-deactivate-account">
+          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+        <div class="p-4 text-center md:p-5">
+          <svg class="w-12 h-12 mx-auto mb-4 text-red-600 dark:text-red-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắc muốn khóa tài khoản này?</h3>
+          <a href="{% url 'deactivate_account' %}" data-modal-hide="confirm-deactivate-account" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-4 py-1.5 text-center">Đúng, tôi chắc chắn</a>
+          <button data-modal-hide="confirm-deactivate-account" type="button" class="py-1.5 px-4 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-delete-modal" tabindex="-1" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative w-full max-w-md max-h-full p-4">
+      <div class="relative bg-white rounded-lg shadow dark:bg-gray-700">
+        <button type="button" class="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" hx-on:click="closeModal('confirm-delete-modal');">
+          <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+          </svg>
+          <span class="sr-only">Close modal</span>
+        </button>
+        <div class="p-4 text-center md:p-5">
+          <svg class="w-12 h-12 mx-auto mb-4 text-red-600 dark:text-red-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+          </svg>
+          <h3 id="question-label" class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Bạn có chắc chắc muốn khóa tài khoản này?</h3>
+          <button id="btn-confirm" hx-on:click="closeModal('confirm-delete-modal');" class="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-4 py-1.5 text-center">Đúng, tôi chắc chắn</button>
+          <button hx-on:click="closeModal('confirm-delete-modal');" type="button" class="py-1.5 px-4 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">Hủy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

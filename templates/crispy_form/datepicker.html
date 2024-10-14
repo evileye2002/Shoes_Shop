@@ -1,0 +1,31 @@
+{# prettier-ignore #}
+<div class="{% if wrapper_class %}{{ wrapper_class }} {% endif %}">
+  <div class="block mb-2 text-sm font-bold text-gray-700">{{ field.label }}</div>
+  <div class="relative" data-datepicker-id="{{ field.auto_id }}" {{ flat_attrs|safe }}>
+    <div class="absolute inset-y-0 flex items-center pointer-events-none start-0 ps-3">
+      <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+      </svg>
+    </div>
+
+    {# prettier-ignore #}
+    <input 
+      id="{{ field.auto_id }}"
+      type="{{ field.field.widget.input_type }}" 
+      name="{{ field.html_name }}" 
+      placeholder="dd-mm-yyyy"
+      value="{% if '-' in field.value %}{{ field.value}}{% else %}{{ field.value|date:'d-m-Y'}}{% endif %}" 
+      class="block w-full py-2 leading-normal text-gray-700 bg-white border border-gray-300 rounded-lg appearance-none ps-10 pe-4 textinput focus:outline-none" 
+      autocomplete="off" />
+
+    {% include 'tailwind/layout/help_text_and_errors.html' %}
+    <script>
+      ;(function () {
+        var $parent = document.currentScript.parentElement
+        var id = $parent.getAttribute('data-datepicker-id')
+        var additional_options = $parent.getAttribute('data-options')
+        initDatepicker(id, JSON.parse(additional_options))
+      })()
+    </script>
+  </div>
+</div>

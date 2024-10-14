@@ -1,0 +1,12 @@
+{# prettier-ignore #}
+<div class="{% if wrapper_class %}{{ wrapper_class }} {% endif %}">
+    <input 
+      class="block w-full px-4 py-2 leading-normal text-gray-700 bg-white border border-gray-300 rounded-lg appearance-none textinput focus:outline-none" 
+      type="text" 
+      id="{{field.auto_id}}" 
+      list="{{field.auto_id}}_datalist"
+      name="{{field.html_name}}" 
+      {{ flat_attrs|safe }}
+      />
+      <datalist id="{{field.auto_id}}_datalist"></datalist>
+</div>
