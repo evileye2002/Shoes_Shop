@@ -10,5 +10,6 @@ urlpatterns = [
     path("htmx/", include("apps.htmx.urls")),
     path("vnpay/", include("apps.vnpay.urls")),
     path("social_account/", include("allauth.urls")),
+    path("ckeditor5/", include("django_ckeditor_5.urls")),
     path("", include("apps.core.urls")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

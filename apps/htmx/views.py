@@ -211,3 +211,42 @@ def delete_address(request, id):
         }
     )
     return response
+
+
+# Core
+from django.db.models import F
+
+from apps.core.models import Shoe, ShoeOption, ShoppingCart, LineItem
+from apps.core.utils import product_detail_handler
+
+
+def product_price(request, uuid):
+    shoe = get_object_or_404(Shoe, uuid=uuid)
+    selected_color = request.GET.get("color")
+    selected_size = request.GET.get("size")
+    context = product_detail_handler(shoe, selected_color, selected_size)
+
+    return render(request, "htmx/product_price.html", context)
+
+
+def product_action(request):
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        option_uuid = post_data.get("selected-option")
+        shoe_option = get_object_or_404(ShoeOption, uuid=option_uuid)
+        quantity = int(post_data.get("quantity", 1))
+        action = post_data.get("action")
+
+        if action == "add-to-cart" and quantity > 0:
+            cart, created = ShoppingCart.objects.get_or_create(user=request.user)
+            item, item_created = LineItem.objects.get_or_create(
+                cart=cart, shoe_option=shoe_option, defaults={"quantity": quantity}
+            )
+
+            if not item_created:
+                item.quantity = F("quantity") + quantity
+                item.save()
+
+            messages.success(request, "Thêm vào giỏ hàng thành công.")
+
+    return HttpResponse(status=204)

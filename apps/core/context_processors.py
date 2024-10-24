@@ -1,8 +1,20 @@
 BREADCRUMB_NAME_MAP = {
-    "account": "Tài khoản của bạn",
-    "sign_in": "Đăng nhập",
-    "đăng ký": "Đăng nhập",
-    "profile_manager": "Quản lý tài khoản",
+    "detail": {
+        "label": "Thông tin chi tiết",
+        "url": False,
+    },
+    "profile_manager": {
+        "label": "Quản lý tài khoản",
+        "url": False,
+    },
+    "products": {
+        "label": "Sản phẩm",
+        "url": True,
+    },
+    "shopping_cart": {
+        "label": "Giỏ hàng của bạn",
+        "url": False,
+    },
 }
 
 
@@ -14,15 +26,22 @@ def breadcrumbs(request):
 
     for i, part in enumerate(path):
         url += f"/{part}"
-        name = BREADCRUMB_NAME_MAP.get(
-            part, part.capitalize()
-        )  # Use mapping if available
+        breadcrumb_info = BREADCRUMB_NAME_MAP.get(part)
+
+        if isinstance(breadcrumb_info, dict):
+            label = breadcrumb_info["label"]
+            breadcrumb_url = url if breadcrumb_info["url"] else None
+        else:
+            label = part.capitalize()
+            breadcrumb_url = url
+
+        if part == "detail":
+            break
+
         breadcrumb_list.append(
             {
-                "name": name,
-                "url": (
-                    url if i != len(path) - 1 else None
-                ),  # No link for the current page
+                "name": label,
+                "url": breadcrumb_url,
             }
         )
 

@@ -81,3 +81,6 @@ class UserAddress(models.Model):
     class Meta:
         verbose_name_plural = "Địa chỉ sử dụng"
         verbose_name = "Địa chỉ sử dụng"
+
+    def __str__(self) -> str:
+        return self.address

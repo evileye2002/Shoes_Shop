@@ -35,4 +35,4 @@ if not is_set_site_packages:
 
 
 # Django-ckeditor-5
-CKEDITOR_5_FILE_STORAGE = "core.storage.CustomStorage"
+CKEDITOR_5_FILE_STORAGE = "apps.core.storage.CustomStorage"

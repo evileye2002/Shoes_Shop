@@ -1,0 +1,42 @@
+{% load util_tags %}
+
+<div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+  <div class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
+    <a href="#" class="shrink-0 md:order-1">
+      <!--  -->
+      <div class="flex items-center size-20">
+        <img src="{{ item.shoe_option.shoe.image.url }}" alt="imac image" />
+      </div>
+    </a>
+
+    <label for="quantity-input-{{ item.uuid }}" class="sr-only">Choose quantity:</label>
+    <div class="flex items-center justify-between md:gap-5 md:order-3 md:justify-end">
+      <div class="flex items-center">
+        <button type="button" id="decrement-button" data-input-counter-decrement="quantity-input-{{ item.uuid }}" class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
+          <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
+          </svg>
+        </button>
+        <input type="text" id="quantity-input-{{ item.uuid }}" data-input-counter class="w-10 text-sm font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white" placeholder="" value="{{ item.quantity }}" required />
+        <button type="button" id="increment-button" data-input-counter-increment="quantity-input-{{ item.uuid }}" class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
+          <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+          </svg>
+        </button>
+      </div>
+      <div class="flex items-center gap-5">
+        <div class="text-end md:order-3 md:w-32">
+          <p class="text-base font-bold text-gray-900 dark:text-white">0đ</p>
+        </div>
+        <button type="button" class="inline-flex items-center text-sm font-medium text-red-600 md:order-4 hover:underline dark:text-red-500">
+          <i class="fa-solid fa-trash-can me-1.5"></i>
+          Xóa
+        </button>
+      </div>
+    </div>
+
+    <div class="flex-1 w-full min-w-0 space-y-4 md:order-2 md:max-w-md">
+      <a href="{% url 'product' item.shoe_option.shoe.uuid %}" class="text-base font-medium text-gray-900 hover:underline dark:text-white">{{ item.shoe_option.shoe.name }}</a>
+    </div>
+  </div>
+</div>

@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # custom apps,
     "apps.core",
+    "apps.attribute",
     "apps.base_account",
     "apps.htmx",
     # plugins
@@ -30,6 +31,7 @@ INSTALLED_APPS = [
     "crispy_tailwind",
     "django_filters",
     "django_ckeditor_5",
+    "django_cotton",
     "django.contrib.sites",
     "allauth",
     "allauth.account",
@@ -104,7 +106,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles" / "static"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media/django_starterkit"
+MEDIA_ROOT = BASE_DIR / "media/shoes_shop"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
@@ -114,6 +116,7 @@ LOGIN_URL = "/account/sign_in"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 SITE_ID = 3
+X_FRAME_OPTIONS = "SAMEORIGIN"
 
 
 # Django-Tailwind
@@ -127,16 +130,48 @@ CRISPY_TEMPLATE_PACK = "tailwind"
 
 # Django-jazzmin
 JAZZMIN_SETTINGS = {
+    # "show_ui_builder": True,
     "site_logo": "imgs/logo.svg",
-    "site_brand": "Django Starterkit",
+    "site_brand": "Xuân Minh Shoes",
     "user_avatar": "avatar",
     "related_modal_active": True,
-    "search_model": ["account.UserCustom"],
+    "search_model": ["base_account.UserCustom"],
     "icons": {
         "account.UserCustom": "fas fa-user",
         "account.UserAddress": "fas fa-map-marker-alt",
         "auth.Group": "fas fa-users",
     },
+}
+JAZZMIN_UI_TWEAKS = {
+    "navbar_small_text": False,
+    "footer_small_text": False,
+    "body_small_text": True,
+    "brand_small_text": False,
+    "brand_colour": False,
+    "accent": "accent-info",
+    "no_navbar_border": True,
+    "navbar_fixed": True,
+    "layout_boxed": False,
+    "footer_fixed": False,
+    "sidebar_fixed": True,
+    "sidebar": "sidebar-light-info",
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": True,
+    "sidebar_nav_child_indent": False,
+    "sidebar_nav_compact_style": False,
+    "sidebar_nav_legacy_style": False,
+    "sidebar_nav_flat_style": False,
+    "theme": "minty",
+    "dark_mode_theme": None,
+    "button_classes": {
+        "primary": "btn-primary",
+        "secondary": "btn-outline-secondary",
+        "info": "btn-info",
+        "warning": "btn-warning",
+        "danger": "btn-danger",
+        "success": "btn-success",
+    },
+    "actions_sticky_top": True,
 }
 
 

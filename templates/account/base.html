@@ -1,14 +1,9 @@
 {% extends 'base_layout.html' %}
-{% load breadcrumb_tags %}
 
 {% block body %}
   <header>
     {% include 'partials/header.html' %}
   </header>
-
-  {% if not 'sign' in request.path %}
-    {% show_breadcrumbs breadcrumbs %}
-  {% endif %}
 
   <main class="">
     {% block content %}

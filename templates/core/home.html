@@ -1,7 +1,170 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
 {% block content %}
-  <section class="bg-gray-50 dark:bg-gray-900">
-    <div class="h-screen p-4">Home Page</div>
+  <section class="bg-white dark:bg-gray-900">
+    <div class="max-w-screen-xl px-4 py-8 mx-auto text-center lg:py-16 lg:px-12">
+      <a href="#" class="inline-flex items-center justify-between px-1 py-1 pr-4 text-sm text-gray-700 bg-gray-100 rounded-full mb-7 dark:bg-gray-800 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700" role="alert">
+        <span class="text-xs bg-primary-600 rounded-full text-white px-4 py-1.5 mr-3">Mới</span> <span class="text-sm font-medium">Đã cập nhật sản phẩm mới! Đi xem ngay</span>
+        <svg class="w-5 h-5 ml-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+        </svg>
+      </a>
+      <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">Khám Phá Bộ Sưu Tập Giày Mới Nhất</h1>
+      <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">Đẳng cấp, phong cách và chất lượng. Tất cả đều có trong bộ sưu tập giày mới nhất của chúng tôi. Hãy chọn ngay cho mình một đôi giày hoàn hảo!</p>
+      <div class="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
+        <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+          Xem Bộ Sưu Tập<svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+          </svg>
+        </a>
+        <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+          <svg class="mr-2 -ml-1 size-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.891 15.107 15.11 8.89m-5.183-.52h.01m3.089 7.254h.01M14.08 3.902a2.849 2.849 0 0 0 2.176.902 2.845 2.845 0 0 1 2.94 2.94 2.849 2.849 0 0 0 .901 2.176 2.847 2.847 0 0 1 0 4.16 2.848 2.848 0 0 0-.901 2.175 2.843 2.843 0 0 1-2.94 2.94 2.848 2.848 0 0 0-2.176.902 2.847 2.847 0 0 1-4.16 0 2.85 2.85 0 0 0-2.176-.902 2.845 2.845 0 0 1-2.94-2.94 2.848 2.848 0 0 0-.901-2.176 2.848 2.848 0 0 1 0-4.16 2.849 2.849 0 0 0 .901-2.176 2.845 2.845 0 0 1 2.941-2.94 2.849 2.849 0 0 0 2.176-.901 2.847 2.847 0 0 1 4.159 0Z" />
+          </svg>Khuyến Mãi Đặc Biệt
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white dark:bg-gray-900">
+    <div id="default-carousel" class="relative w-full px-16 py-8" data-carousel="slide">
+      <!-- Carousel wrapper -->
+      <div class="relative h-56 overflow-hidden rounded-lg md:h-[30rem] z-0">
+        <!-- Item 1 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+          <img src="{% static 'imgs/banner_2.jpg' %}" class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..." />
+        </div>
+        <!-- Item 2 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+          <img src="{% static 'imgs/banner_3.jpg' %}" class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..." />
+        </div>
+        <!-- Item 3 -->
+        <div class="hidden duration-700 ease-in-out" data-carousel-item>
+          <img src="{% static 'imgs/banner_4.webp' %}" class="absolute block w-full h-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2" alt="..." />
+        </div>
+      </div>
+      <!-- Slider indicators -->
+      <div class="absolute z-30 flex space-x-3 -translate-x-1/2 bottom-5 left-1/2 rtl:space-x-reverse">
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="true" aria-label="Slide 1" data-carousel-slide-to="0"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 2" data-carousel-slide-to="1"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 3" data-carousel-slide-to="2"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 4" data-carousel-slide-to="3"></button>
+        <button type="button" class="w-3 h-3 rounded-full" aria-current="false" aria-label="Slide 5" data-carousel-slide-to="4"></button>
+      </div>
+      <!-- Slider controls -->
+      <button type="button" class="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer start-0 group focus:outline-none" data-carousel-prev>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+          <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4" />
+          </svg>
+          <span class="sr-only">Previous</span>
+        </span>
+      </button>
+      <button type="button" class="absolute top-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer end-0 group focus:outline-none" data-carousel-next>
+        <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30 dark:bg-gray-800/30 group-hover:bg-white/50 dark:group-hover:bg-gray-800/60 group-focus:ring-4 group-focus:ring-white dark:group-focus:ring-gray-800/70 group-focus:outline-none">
+          <svg class="w-4 h-4 text-white dark:text-gray-800 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+          </svg>
+          <span class="sr-only">Next</span>
+        </span>
+      </button>
+    </div>
+  </section>
+
+  <section class="bg-white dark:bg-gray-900">
+    <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+      <div class="mr-auto place-self-center lg:col-span-7">
+        <h1 class="max-w-2xl mb-4 text-4xl font-extrabold leading-none tracking-tight md:text-5xl xl:text-6xl dark:text-white">Bộ Sưu Tập Giày Thời Thượng Dành Cho Bạn</h1>
+        <p class="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Đừng bỏ lỡ những mẫu giày mới nhất, phong cách và chất lượng. Tạo dấu ấn riêng cho bạn với bộ sưu tập giày đầy phong cách từ chúng tôi.</p>
+        <a href="#" class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
+          Khám Phá Ngay<svg class="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+          </svg>
+        </a>
+        <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800">Xem Khuyến Mãi</a>
+      </div>
+      <div class="hidden lg:mt-0 lg:col-span-5 lg:flex">
+        <img src="{% static 'imgs/banner_2.jpeg' %}" alt="mockup" />
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white dark:bg-gray-900">
+    <div class="max-w-screen-xl px-4 py-8 mx-auto sm:py-16 lg:px-6">
+      <div class="max-w-screen-lg mb-8 lg:mb-16">
+        <h2 class="mb-4 text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white">Phong Cách Hoàn Hảo Cho Những Đôi Chân Năng Động</h2>
+        <p class="text-gray-500 sm:text-xl dark:text-gray-400">Khám phá bộ sưu tập giày phù hợp cho mọi phong cách sống. Từ giày thể thao đến giày công sở, chúng tôi mang đến sự thoải mái và chất lượng cao cho mỗi bước đi của bạn.</p>
+      </div>
+      <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
+        <div>
+          <div class="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+            <div class="text-primary-600 dark:text-primary-300">
+              <i class="fa-solid fa-bicycle"></i>
+            </div>
+          </div>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Thể Thao & Thể Hình</h3>
+          <p class="text-gray-500 dark:text-gray-400">Nâng cao hiệu suất tập luyện của bạn với những đôi giày thể thao tối ưu hóa cho mọi hoạt động, giúp bạn thoải mái và vững bước.</p>
+        </div>
+        <div>
+          <div class="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+            <div class="text-primary-600 dark:text-primary-300">
+              <i class="fa-solid fa-cloud-sun"></i>
+            </div>
+          </div>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Phong Cách Hằng Ngày</h3>
+          <p class="text-gray-500 dark:text-gray-400">Hãy để đôi giày phản ánh phong cách sống của bạn, từ những ngày đi dạo phố đến những buổi gặp mặt bạn bè với phong cách trẻ trung và năng động.</p>
+        </div>
+        <div>
+          <div class="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+            <div class="text-primary-600 dark:text-primary-300">
+              <i class="fa-solid fa-user-tie"></i>
+            </div>
+          </div>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Giày Công Sở</h3>
+          <p class="text-gray-500 dark:text-gray-400">Tạo sự chuyên nghiệp và sang trọng cho mỗi bước chân trong công việc với các mẫu giày công sở được thiết kế tinh tế.</p>
+        </div>
+        <div>
+          <div class="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+            <div class="text-primary-600 dark:text-primary-300">
+              <i class="fa-solid fa-shoe-prints"></i>
+            </div>
+          </div>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Bộ Sưu Tập Sneaker</h3>
+          <p class="text-gray-500 dark:text-gray-400">Khám phá những đôi sneaker đậm chất thời trang, mang đến sự năng động và phong cách cho mọi hoạt động hàng ngày của bạn.</p>
+        </div>
+        <div>
+          <div class="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+            <div class="text-primary-600 dark:text-primary-300">
+              <i class="fa-solid fa-hourglass-start"></i>
+            </div>
+          </div>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Phiên Bản Giới Hạn</h3>
+          <p class="text-gray-500 dark:text-gray-400">Sở hữu những mẫu giày độc đáo chỉ có số lượng giới hạn, tạo dấu ấn riêng biệt cho phong cách của bạn.</p>
+        </div>
+        <div>
+          <div class="flex items-center justify-center w-10 h-10 mb-4 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
+            <div class="text-primary-600 dark:text-primary-300">
+              <i class="fa-solid fa-person-running fa-lg"></i>
+            </div>
+          </div>
+          <h3 class="mb-2 text-xl font-bold dark:text-white">Giày Dã Ngoại</h3>
+          <p class="text-gray-500 dark:text-gray-400">Chuẩn bị cho mọi hành trình khám phá ngoài trời với những đôi giày bền bỉ, chống trượt và chịu được mọi điều kiện thời tiết.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-8 antialiased bg-white dark:bg-gray-900 md:py-16">
+    <div class="grid max-w-screen-xl px-4 mx-auto md:grid-cols-12 lg:gap-12 xl:gap-0">
+      <div class="content-center justify-self-start md:col-span-7 md:text-start">
+        <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight dark:text-white md:max-w-2xl md:text-5xl xl:text-6xl">Ưu Đãi Giới Hạn!<br />Giảm Giá Lên Đến 50%!</h1>
+        <p class="max-w-2xl mb-4 text-gray-500 dark:text-gray-400 md:mb-12 md:text-lg lg:mb-5 lg:text-xl">Nhanh Tay Sắm, Số Lượng Có Hạn, Giá Cực Tốt Chỉ Trong Thời Gian Ngắn!</p>
+        <a href="#" class="inline-block rounded-lg bg-primary-700 px-6 py-3.5 text-center font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Mua Ngay</a>
+      </div>
+      <div class="hidden md:col-span-5 md:mt-0 md:flex">
+        <img class="dark:hidden" src="{% static 'imgs/girl-shopping-list.svg' %}" alt="shopping illustration" />
+      </div>
+    </div>
   </section>
 {% endblock %}

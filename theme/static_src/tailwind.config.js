@@ -3,6 +3,7 @@
  * https://saashammer.com/blog/render-django-form-with-tailwind-css-style/#jit
  */
 //#region Crispy Form TailwinCss fix
+const { error } = require("console");
 const Path = require("path");
 const pySitePackages = process.env.Site_Packages || "";
 
@@ -12,6 +13,7 @@ const contentDefaults = [
   "../../templates/**/*.html",
   "../../**/templates/**/*.html",
   "../../apps/**/forms.py",
+  "../../apps/core/templatetags/coton_helper_tags.py",
   "../../**/node_modules/flowbite/**/*.js",
   "../../static/js/*.js",
   "../../**/static/js/*.js",
@@ -50,6 +52,7 @@ module.exports = {
           900: "#1e3a8a",
           950: "#172554",
         },
+        error: "#FB9898",
       },
     },
   },
@@ -67,5 +70,6 @@ module.exports = {
       forms: true,
       tooltips: true,
     }),
+    require("flowbite-typography"),
   ],
 };

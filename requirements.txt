@@ -10,6 +10,7 @@ django-shortuuidfield
 django-filter
 django-jazzmin
 django_ckeditor_5
+django-cotton
 
 pillow
 crispy-tailwind

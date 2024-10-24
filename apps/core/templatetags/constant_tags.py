@@ -12,10 +12,10 @@ NAVBAR_LINKS = [
 ]
 
 CONFIG = {
-    "web_name": "Django Staterkit",
-    "description": "Django Staterkit Description",
+    "web_name": "Xuân Minh Shoes",
+    "description": "Xuân Minh Shoes Description",
     "shortcute_icon": "/static/imgs/logo.svg",
-    "copyright": "Django Starterkit. All Rights Reserved",
+    "copyright": "Xuân Minh Shoes. All Rights Reserved",
 }
 
 

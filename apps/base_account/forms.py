@@ -40,6 +40,7 @@ class SignUpForm(UserCreationForm):
     )
     username = forms.CharField(
         max_length=150,
+        label="Tên đăng nhập",
         widget=forms.TextInput(
             attrs={
                 "autocapitalize": "none",
@@ -56,6 +57,26 @@ class SignUpForm(UserCreationForm):
             attrs={
                 "autocomplete": "off",
                 "placeholder": "Địa chỉ email",
+            }
+        ),
+    )
+    password1 = forms.CharField(
+        min_length=8,
+        label="Mật khẩu",
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                "placeholder": "Mật khẩu đăng nhập",
+            }
+        ),
+    )
+    password2 = forms.CharField(
+        min_length=8,
+        label="Xác nhận mật khẩu",
+        widget=forms.PasswordInput(
+            attrs={
+                "autocomplete": "new-password",
+                "placeholder": "Xác nhận mật khẩu",
             }
         ),
     )

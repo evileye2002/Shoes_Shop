@@ -1,0 +1,54 @@
+{% load util_tags %}
+
+<div>
+  <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Màu sắc</p>
+  <ul class="flex flex-wrap w-full gap-2">
+    {% for color in colors %}
+      <li>
+        {# prettier-ignore #}
+        <c-radio-input 
+          :ischecked="selected_color"
+          :isdisabled="available_colors"
+          prefixid="color"
+          id="{{ color.id }}" 
+          label="{{ color }}" 
+          name="color" 
+          value="{{ color.id }}" 
+          required/>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div>
+  <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Kích cỡ</p>
+
+  <ul class="flex flex-wrap w-full gap-2">
+    {% for size in sizes %}
+      <li>
+        {# prettier-ignore #}
+        <c-radio-input 
+          :ischecked="selected_size"
+          :isdisabled="available_sizes"
+          prefixid="size"
+          id="{{ size.id }}" 
+          label="{{ size }}" 
+          name="size" 
+          value="{{ size.id }}" 
+          required />
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div id="product-price" class="flex items-end gap-2" hx-swap-oob="true">
+  <h4 class="text-xl font-bold sm:text-2xl text-primary-500">{{ selected_options.0.price|default:'0'|int_comma }}đ</h4>
+  <div class="flex items-center gap-2">
+    {% if discount %}
+      <p class="font-medium text-gray-500 line-through">{{ selected_options.0.old_price|default:'0'|int_comma }}đ</p>
+      <p class="font-semibold text-xs py-0.5 px-1.5 rounded-lg bg-error h-fit">-{{ discount }}%</p>
+    {% endif %}
+  </div>
+</div>
+
+<input hx-swap-oob="true" id="selected-option" type="text" class="hidden" name="selected-option" value="{{ selected_options.0.uuid }}" />

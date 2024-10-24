@@ -1,12 +1,9 @@
 {% extends 'base_layout.html' %}
-{% load breadcrumb_tags %}
 
 {% block body %}
   <header>
     {% include 'partials/header.html' %}
   </header>
-
-  {% show_breadcrumbs breadcrumbs %}
 
   <main class="">
     {% block content %}

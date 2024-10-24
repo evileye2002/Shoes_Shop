@@ -24,10 +24,23 @@
         </ul>
       </div>
 
-      <div class="flex items-center justify-end w-1/5">
+      <div class="flex items-center justify-end w-1/5 gap-2">
         {% if not user.is_authenticated %}
           <a href="{% url 'sign_in' %}" class="px-4 py-2 mr-2 text-sm font-medium text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Đăng nhập</a>
         {% else %}
+          {# prettier-ignore #}
+          <c-button 
+            style="light" 
+            role="link"
+            href="{% url 'shopping_cart' %}"
+            overideclass="relative !px-2 !py-2 !text-gray-900 hover:!text-gray-900 border-0 !bg-transparent hover:!bg-gray-200">
+            <c-slot name="start_slot">
+              <div class="flex items-center justify-center size-5">
+                <i class="fa-solid fa-cart-shopping fa-lg"></i>
+              </div>
+            </c-slot>
+            <div class="absolute inline-flex items-center justify-center text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full size-5 -top-1 -end-1 dark:border-gray-900">8</div>
+          </c-button>
           <button data-dropdown-toggle="dropdownAvatarName" data-dropdown-offset-distance="-40" data-dropdown-offset-skidding="135" data-dropdown-placement="left" class="flex items-center overflow-hidden text-sm font-medium text-gray-900 rounded-full size-10 ring-1 ring-primary-200 hover:text-blue-600 dark:hover:text-blue-500 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white" type="button">
             <!-- Dropdown toggle -->
             <img id="user-avatar-header" class="w-full rounded-full" src="{{ user.avatar.url }}" alt="user-avatar" />

@@ -3,10 +3,10 @@
 {% get_social_accounts user=user as social_accounts %}
 
 {% block content %}
-  <div class="bg-gray-50">
-    <div class="py-8 w-full px-4 md:w-[90%] space-y-4 mx-auto">
-      <div class="flex gap-4">
-        <div class="hidden md:block md:w-[30%]">
+  <div class="py-8 antialiased bg-gray-50 dark:bg-gray-900 md:py-12">
+    <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+      <div class="flex flex-col gap-4 md:flex-row">
+        <div class=" md:block md:w-[30%]">
           <div class="sticky top-[90px] space-y-8">
             <div class="flex flex-wrap justify-center gap-2">
               {# prettier-ignore #}
@@ -19,7 +19,7 @@
               <h2 id="user-fullname" class="w-full text-lg font-medium text-center">{{ user.get_full_name }}</h2>
             </div>
 
-            <ul class="space-y-4 text-sm font-medium text-gray-900 dark:text-gray-400">
+            <ul class="hidden space-y-4 text-sm font-medium text-gray-900 md:block dark:text-gray-400">
               <li>
                 <a href="#profile" class="inline-flex items-center w-full px-4 py-3 bg-white rounded-lg shadow dark:border dark:border-gray-600 hover:text-white hover:bg-blue-700 dark:bg-gray-800 dark:hover:bg-gray-700 dark:hover:border-gray-600">
                   <svg class="size-5 me-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
