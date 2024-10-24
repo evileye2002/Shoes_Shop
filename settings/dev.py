@@ -1,4 +1,4 @@
-import site
+import site, dj_database_url
 
 from .base import *
 
@@ -24,6 +24,11 @@ INTERNAL_IPS = [
 
 # Django-Tailwind
 NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
+
+
+# PostgresSQL database
+db_url = env("DATABASE_URL")
+DATABASES["default"] = dj_database_url.parse(db_url)
 
 
 # Crispy-form
