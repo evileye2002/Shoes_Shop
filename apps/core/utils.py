@@ -48,8 +48,6 @@ def product_detail_handler(shoe, selected_color, selected_size, query_all=True):
         review_count = len(reviews)
 
     for option in options:
-        if query_all:
-            option_images.extend(option.images.all())
         if option.color:
             colors.add(option.color)
         if option.size:
@@ -61,6 +59,9 @@ def product_detail_handler(shoe, selected_color, selected_size, query_all=True):
         {str(option.color.id) for option in options if option.quantity > 0}
     )
     selected_color = selected_color or available_colors[0]
+    for option in options:
+        if query_all and str(option.color.id) == selected_color:
+            option_images.extend(option.images.all())
 
     selected_options = [
         option

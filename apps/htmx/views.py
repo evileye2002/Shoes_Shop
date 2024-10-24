@@ -222,10 +222,16 @@ from apps.core.utils import product_detail_handler
 
 def product_price(request, uuid):
     shoe = get_object_or_404(Shoe, uuid=uuid)
+    previous_color = request.GET.get("previous-color")
     selected_color = request.GET.get("color")
     selected_size = request.GET.get("size")
-    context = product_detail_handler(shoe, selected_color, selected_size)
+    change_color = previous_color != selected_color
+    product_data = product_detail_handler(shoe, selected_color, selected_size)
 
+    context = {
+        "change_color": change_color,
+        **product_data,
+    }
     return render(request, "htmx/product_price.html", context)
 
 

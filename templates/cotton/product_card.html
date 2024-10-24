@@ -4,7 +4,7 @@
   <div class="w-full h-56">
     {# prettier-ignore #}
     <a href="{% url 'product' shoe.uuid %}" class="flex items-center h-full">
-      <img class="w-full" src="{{ shoe.image.url }}" alt="{{ shoe.name }}" />
+      <img class="w-full" src="{{ data.options.0.images.all.0.image.url }}" alt="{{ shoe.name }}" />
     </a>
   </div>
   <div class="pt-6">
@@ -73,7 +73,7 @@
 
     <div class="flex items-center justify-between gap-4 mt-4">
       <div class="">
-        <p class="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">{{ data.min_price|int_comma }}đ</p>
+        <p class="text-2xl font-extrabold leading-tight text-primary-500 dark:text-white">{{ data.min_price|int_comma }}đ</p>
       </div>
 
       <c-button>

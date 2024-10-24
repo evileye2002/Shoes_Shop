@@ -42,11 +42,6 @@ class Shoe(AbstractTimestamp):
         related_name="shoes",
         verbose_name="Thẻ",
     )
-    image = models.ImageField(
-        upload_to="images/shoes/",
-        default="default/noimage.jpg",
-        verbose_name="Ảnh",
-    )
     description = CKEditor5Field("Mô tả", config_name="default", null=True, blank=True)
 
     class Meta:
@@ -238,6 +233,7 @@ class LineItem(AbstractTimestamp):
     )
 
     class Meta:
+        ordering = ["-created_at"]
         verbose_name_plural = "Mục hàng"
         verbose_name = "Mục hàng"
 

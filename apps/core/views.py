@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 
-from .models import Shoe, ShoppingCart, LineItem
+from .models import Shoe, ShoppingCart, LineItem, ShoeOption
 from .utils import product_detail_handler
 
 
@@ -10,7 +10,7 @@ def home(request):
 
 
 def products(request):
-    shoes = Shoe.objects.prefetch_related("options", "reviews")
+    shoes = Shoe.objects.prefetch_related("options__images", "reviews")
     shoe_data = []
     max_discount = 0
     min_price = float("inf")
@@ -36,6 +36,7 @@ def products(request):
         shoe_data.append(
             {
                 "shoe": shoe,
+                "options": options,
                 "min_price": min_price,
                 "review_range": range(0, 5),
                 "review_avg": round(review_avg, 1),
@@ -68,9 +69,45 @@ def product(request, uuid):
 
 def shopping_cart(request):
     cart, _ = ShoppingCart.objects.get_or_create(user=request.user)
-    items = LineItem.objects.filter(cart=cart)
+    # options = list(
+    #     ShoeOption.objects.prefetch_related("images").select_related("color")
+    # )
+    items = list(
+        (
+            LineItem.objects.filter(cart=cart)
+            .prefetch_related("shoe_option__images")
+            .select_related("shoe_option__shoe")
+        )
+    )
+
+    items_data = []
+
+    for item in items:
+        has_image = item.shoe_option.images.exists()
+        image = None
+
+        if has_image:
+            image = item.shoe_option.images.first()
+        # else:
+        #     matching_option = next(
+        #         (
+        #             option
+        #             for option in options
+        #             if option.color == item.shoe_option.color
+        #         ),
+        #         None,
+        #     )
+        #     if matching_option:
+        #         image = matching_option.images.first()
+
+        items_data.append(
+            {
+                "image": image,
+                "item": item,
+            }
+        )
 
     context = {
-        "items": items,
+        "items_data": items_data,
     }
     return render(request, "core/shopping_cart.html", context)

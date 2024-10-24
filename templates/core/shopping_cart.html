@@ -15,8 +15,8 @@
         <div class="mt-6 sm:mt-8 md:gap-6 lg:flex lg:items-start xl:gap-8">
           <div class="flex-none w-full mx-auto lg:max-w-2xl xl:max-w-4xl">
             <div class="space-y-6">
-              {% for item in items %}
-                <c-lineitem-card :item="item"></c-lineitem-card>
+              {% for data in items_data %}
+                <c-lineitem-card :item="data.item" :itemimage="data.image"></c-lineitem-card>
               {% endfor %}
             </div>
             <div class="hidden xl:mt-8 xl:block">
