@@ -39,7 +39,7 @@
                 <i class="fa-solid fa-cart-shopping fa-lg"></i>
               </div>
             </c-slot>
-            <div class="absolute inline-flex items-center justify-center text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full size-5 -top-1 -end-1 dark:border-gray-900">8</div>
+            <div id="cart-item-indicator" class="absolute inline-flex items-center justify-center text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full size-5 -top-1 -end-1 dark:border-gray-900">{{user.carts.items.all.count}}</div>
           </c-button>
           <button data-dropdown-toggle="dropdownAvatarName" data-dropdown-offset-distance="-40" data-dropdown-offset-skidding="135" data-dropdown-placement="left" class="flex items-center overflow-hidden text-sm font-medium text-gray-900 rounded-full size-10 ring-1 ring-primary-200 hover:text-blue-600 dark:hover:text-blue-500 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:text-white" type="button">
             <!-- Dropdown toggle -->

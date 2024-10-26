@@ -11,15 +11,30 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         categories = ["Thể thao", "Thời trang", "Chạy bộ", "Dã ngoại"]
-        brands = ["Nike", "Adidas", "Puma", "Converse", "Vans"]
-        tags = ["Giày thể thao", "Sneaker", "Giày chạy bộ", "Hàng mới", "Sale"]
-        sizes = ["36", "37", "38", "39", "40", "41", "42", "43"]
+        brands = [
+            "Nike",
+            "Adidas",
+            "Puma",
+            "Converse",
+            "Vans",
+            "Kappa",
+        ]
+        tags = [
+            "Giày thể thao",
+            "Sneaker",
+            "Giày chạy bộ",
+            "Hàng mới",
+            "Sale",
+        ]
+        sizes = ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"]
         colors = [
             {"name": "Đen", "hex": "#000000"},
             {"name": "Trắng", "hex": "#FFFFFF"},
             {"name": "Đỏ", "hex": "#FF0000"},
             {"name": "Xanh dương", "hex": "#0000FF"},
             {"name": "Vàng", "hex": "#FFFF00"},
+            {"name": "Nâu/Be", "hex": "#FFFF00"},
+            {"name": "Đen/Xanh lá", "hex": "#FFFF00"},
         ]
 
         print("Attribute Generating...")
@@ -40,7 +55,7 @@ class Command(BaseCommand):
         for color in colors:
             Color.objects.get_or_create(
                 name=color["name"],
-                hex_color=color["hex"],
+                # hex_color=color["hex"],
             )
 
         print("Size Generating...")

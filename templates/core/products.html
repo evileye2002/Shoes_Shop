@@ -51,8 +51,8 @@
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {% for data in shoe_data %}
-          <c-product-card :shoe="data.shoe" :data="data " />
+        {% for shoe in shoes %}
+          <c-product-card :shoe="shoe" />
         {% endfor %}
       </div>
     </div>

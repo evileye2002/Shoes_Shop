@@ -13,15 +13,15 @@
         <div class="md:w-[60%] p-3 border border-gray-200 bg-white shadow-sm rounded-lg flex items-center">
           <div id="product-images-carousel" class="relative w-full dark" data-carousel="static">
             <div class="relative z-0 h-56 overflow-hidden sm:h-96">
-              {% for option_image in option_images %}
+              {% for option_image in selected_option_images %}
                 {# prettier-ignore #}
                 <div class="hidden duration-700 ease-in-out" data-carousel-item="{% if forloop.counter0 == 0 %}active{% endif %}">
-                  <img src="{{ option_image.image.url }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 rounded-lg top-1/2 left-1/2" alt="..." />
+                  <img src="{{ option_image.image.url }}" class="absolute block max-h-full -translate-x-1/2 -translate-y-1/2 rounded-lg top-1/2 left-1/2" alt="..." />
                 </div>
               {% endfor %}
             </div>
             <div class="absolute z-[5] flex space-x-3 -translate-x-1/2 rtl:space-x-reverse bottom-5 left-1/2">
-              {% for option_image in option_images %}
+              {% for option_image in selected_option_images %}
                 {# prettier-ignore #}
                 <button 
                     type="button" 
@@ -58,7 +58,7 @@
             <div class="flex items-center mt-2">
               <div class="flex items-center">
                 {% for i in review_range %}
-                  {% if i < review_avg_int %}
+                  {% if i < shoe.avg_review|default:0 %}
                     <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
                     </svg>
@@ -69,38 +69,40 @@
                   {% endif %}
                 {% endfor %}
               </div>
-              <p class="text-sm font-medium text-gray-900 ms-2 dark:text-white">{{ review_avg }}</p>
+              <p class="text-sm font-medium text-gray-900 ms-2 dark:text-white">{{ shoe.avg_review|default:'0.0' }}</p>
               <span class="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
-              <a href="#reviews" class="text-sm font-medium text-gray-900 underline hover:no-underline">{{ review_count }} đánh giá</a>
+              <a href="#reviews" class="text-sm font-medium text-gray-900 underline hover:no-underline">{{ shoe.total_reviews }} đánh giá</a>
             </div>
           </div>
 
-          <div id="product-price" class="flex items-end gap-2">
-            <h4 class="text-xl font-bold sm:text-2xl text-primary-500">{{ selected_options.0.price|default:'0'|int_comma }}đ</h4>
+          <div id="product-price" class="flex items-end gap-2 text-center">
             <div class="flex items-center gap-2">
-              {% if discount %}
-                <p class="font-medium text-gray-500 line-through">{{ selected_options.0.old_price|default:'0'|int_comma }}đ</p>
-                <p class="font-semibold text-xs py-0.5 px-1.5 rounded-lg bg-error h-fit">-{{ discount }}%</p>
+              <h4 class="text-xl font-bold sm:text-2xl text-primary-500">{{ selected_size.price|default:0|int_comma }}đ</h4>
+            </div>
+            <div class="flex items-center gap-2">
+              {% if selected_size_discount %}
+                <p class="font-medium text-gray-500 line-through">{{ selected_size.old_price|default:0|int_comma }}đ</p>
+                <p class="font-semibold text-xs py-0.5 px-1.5 rounded-lg bg-error h-fit">-{{ selected_size_discount }}%</p>
               {% endif %}
             </div>
           </div>
 
-          <form class="space-y-4" hx-get="{% url 'htmx_product_price' shoe.uuid %}" hx-trigger="change" hx-target="this">
-            <input type="text" class="hidden" name="previous-color" value="{{ selected_color }}" />
+          <form class="space-y-4" hx-get="{% url 'htmx_product_selection_update' shoe.uuid %}" hx-trigger="change" hx-target="this">
+            <input type="text" class="hidden" name="previous-color" value="{{ selected_option.uuid }}" />
+
             <div>
               <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Màu sắc</p>
               <ul class="flex flex-wrap w-full gap-2">
-                {% for color in colors %}
+                {% for option in options %}
                   <li>
                     {# prettier-ignore #}
                     <c-radio-input 
-                      :ischecked="selected_color"
-                      :isdisabled="available_colors"
-                      prefixid="color"
-                      id="{{ color.id }}" 
-                      label="{{ color }}" 
+                      :ischecked="selected_option"
+                      :instance="option"
+                      id="{{ option.uuid }}" 
+                      label="{{ option.color }}" 
                       name="color" 
-                      value="{{ color.id }}" 
+                      value="{{ option.uuid }}" 
                       required/>
                   </li>
                 {% endfor %}
@@ -111,17 +113,17 @@
               <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Kích cỡ</p>
 
               <ul class="flex flex-wrap w-full gap-2">
-                {% for size in sizes %}
+                {% for size in all_sizes %}
                   <li>
                     {# prettier-ignore #}
                     <c-radio-input 
                       :ischecked="selected_size"
-                      :isdisabled="available_sizes"
-                      prefixid="size"
-                      id="{{ size.id }}" 
-                      label="{{ size }}" 
+                      :isdisabled="selected_option_sizes"
+                      :instance="size"
+                      id="{{ size.uuid }}" 
+                      label="{{ size.size }}" 
                       name="size" 
-                      value="{{ size.id }}" 
+                      value="{{ size.uuid }}" 
                       required />
                   </li>
                 {% endfor %}
@@ -137,7 +139,7 @@
             class="space-y-4">
             {% csrf_token %}
 
-            <input id="selected-option" type="text" class="hidden" name="selected-option" value="{{ selected_options.0.uuid }}" />
+            <input id="selected-option-size" type="text" class="hidden" name="selected-option-size" value="{{ selected_size.uuid }}" />
 
             <div>
               <label for="quantity" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn số lượng:</label>
@@ -182,20 +184,20 @@
 
             <div class="flex gap-2 whitespace-nowrap">
               {# prettier-ignore #}
-              <c-button 
+              {% comment %} <c-button 
                 type="submit"
                 name="action"
                 value="buy-now"
                 style="secondary"
                 class="w-[40%] font-medium rounded-lg px-4 py-1.5 focus:ring-4 focus:outline-none">
                 Mua ngay
-              </c-button>
+              </c-button> {% endcomment %}
               {# prettier-ignore #}
               <c-button 
                 type="submit"
                 name="action"
                 value="add-to-cart"
-                class="w-[60%] font-medium rounded-lg px-4 py-1.5 focus:ring-4 focus:outline-none">
+                class="w-full font-medium rounded-lg px-4 py-1.5 focus:ring-4 focus:outline-none">
                 Thêm vào giỏ hàng
               </c-button>
             </div>
@@ -257,7 +259,7 @@
           <div class="flex items-center mt-2">
             <div class="flex items-center">
               {% for i in review_range %}
-                {% if i < review_avg_int %}
+                {% if i < shoe.avg_review|default:0 %}
                   <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
                   </svg>
@@ -268,10 +270,10 @@
                 {% endif %}
               {% endfor %}
             </div>
-            <p class="text-sm font-medium text-gray-900 ms-2 dark:text-white">{{ review_avg }}</p>
+            <p class="text-sm font-medium text-gray-900 ms-2 dark:text-white">{{ shoe.avg_review|default:'0.0' }}</p>
             <span class="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
-            <a href="#reviews" class="hidden text-sm font-medium text-gray-900 underline me-auto hover:no-underline sm:block">{{ review_count }} đánh giá</a>
-            <p class="text-sm font-medium text-gray-900 me-auto sm:hidden">({{ review_count }})</p>
+            <a href="#reviews" class="hidden text-sm font-medium text-gray-900 underline me-auto hover:no-underline sm:block">{{ shoe.total_reviews }} đánh giá</a>
+            <p class="text-sm font-medium text-gray-900 me-auto sm:hidden">({{ shoe.total_reviews }})</p>
 
             {# prettier-ignore #}
             <c-button 

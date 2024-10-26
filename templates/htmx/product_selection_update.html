@@ -1,21 +1,19 @@
 {% load util_tags %}
-
-<input type="text" class="hidden" name="previous-color" value="{{ selected_color }}" />
+<input type="text" class="hidden" name="previous-color" value="{{ selected_option.uuid }}" />
 
 <div>
   <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Màu sắc</p>
   <ul class="flex flex-wrap w-full gap-2">
-    {% for color in colors %}
+    {% for option in options %}
       <li>
         {# prettier-ignore #}
         <c-radio-input 
-          :ischecked="selected_color"
-          :isdisabled="available_colors"
-          prefixid="color"
-          id="{{ color.id }}" 
-          label="{{ color }}" 
+          :ischecked="selected_option"
+          :instance="option"
+          id="{{ option.uuid }}" 
+          label="{{ option.color }}" 
           name="color" 
-          value="{{ color.id }}" 
+          value="{{ option.uuid }}" 
           required/>
       </li>
     {% endfor %}
@@ -26,47 +24,49 @@
   <p class="mb-2 text-sm font-medium text-gray-900 dark:text-white">Kích cỡ</p>
 
   <ul class="flex flex-wrap w-full gap-2">
-    {% for size in sizes %}
+    {% for size in all_sizes %}
       <li>
         {# prettier-ignore #}
         <c-radio-input 
           :ischecked="selected_size"
-          :isdisabled="available_sizes"
-          prefixid="size"
-          id="{{ size.id }}" 
-          label="{{ size }}" 
+          :isdisabled="selected_option_sizes"
+          :instance="size"
+          id="{{ size.uuid }}" 
+          label="{{ size.size }}" 
           name="size" 
-          value="{{ size.id }}" 
+          value="{{ size.uuid }}" 
           required />
       </li>
     {% endfor %}
   </ul>
 </div>
 
-<div id="product-price" class="flex items-end gap-2" hx-swap-oob="true">
-  <h4 class="text-xl font-bold sm:text-2xl text-primary-500">{{ selected_options.0.price|default:'0'|int_comma }}đ</h4>
+<div id="product-price" class="flex items-end gap-2 text-center" hx-swap-oob="true">
   <div class="flex items-center gap-2">
-    {% if discount %}
-      <p class="font-medium text-gray-500 line-through">{{ selected_options.0.old_price|default:'0'|int_comma }}đ</p>
-      <p class="font-semibold text-xs py-0.5 px-1.5 rounded-lg bg-error h-fit">-{{ discount }}%</p>
+    <h4 class="text-xl font-bold sm:text-2xl text-primary-500">{{ selected_size.price|default:0|int_comma }}đ</h4>
+  </div>
+  <div class="flex items-center gap-2">
+    {% if selected_size_discount %}
+      <p class="font-medium text-gray-500 line-through">{{ selected_size.old_price|default:0|int_comma }}đ</p>
+      <p class="font-semibold text-xs py-0.5 px-1.5 rounded-lg bg-error h-fit">-{{ selected_size_discount }}%</p>
     {% endif %}
   </div>
 </div>
 
-<input hx-swap-oob="true" id="selected-option" type="text" class="hidden" name="selected-option" value="{{ selected_options.0.uuid }}" />
+<input hx-swap-oob="true" id="selected-option-size" type="text" class="hidden" name="selected-option-size" value="{{ selected_size.uuid }}" />
 
 {% if change_color %}
-  <div id="product-images-carousel" hx-swap-oob="true" class="relative w-full dark" data-carousel="static">
+  <div id="product-images-carousel" class="relative w-full dark" data-carousel="static" hx-swap-oob="true">
     <div class="relative z-0 h-56 overflow-hidden sm:h-96">
-      {% for option_image in option_images %}
+      {% for option_image in selected_option_images %}
         {# prettier-ignore #}
         <div class="hidden duration-700 ease-in-out" data-carousel-item="{% if forloop.counter0 == 0 %}active{% endif %}">
-        <img src="{{ option_image.image.url }}" class="absolute block w-full -translate-x-1/2 -translate-y-1/2 rounded-lg top-1/2 left-1/2" alt="..." />
+        <img src="{{ option_image.image.url }}" class="absolute block max-h-full -translate-x-1/2 -translate-y-1/2 rounded-lg top-1/2 left-1/2" alt="..." />
       </div>
       {% endfor %}
     </div>
     <div class="absolute z-[5] flex space-x-3 -translate-x-1/2 rtl:space-x-reverse bottom-5 left-1/2">
-      {% for option_image in option_images %}
+      {% for option_image in selected_option_images %}
         {# prettier-ignore #}
         <button 
           type="button" 

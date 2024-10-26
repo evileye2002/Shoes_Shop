@@ -214,39 +214,74 @@ def delete_address(request, id):
 
 
 # Core
-from django.db.models import F
+from django.http import HttpResponse, Http404
+from django.db.models import F, Prefetch
 
-from apps.core.models import Shoe, ShoeOption, ShoppingCart, LineItem
-from apps.core.utils import product_detail_handler
+from apps.core.models import (
+    Shoe,
+    ShoeOption,
+    ShoppingCart,
+    LineItem,
+    ShoeOptionSize,
+    ShoeOptionImage,
+)
+from apps.core.utils import product_detail_handler, cart_item_total_price_handler
 
 
-def product_price(request, uuid):
-    shoe = get_object_or_404(Shoe, uuid=uuid)
+def product_selection_update(request, uuid):
+    shoe = (
+        Shoe.objects.filter(uuid=uuid)
+        .prefetch_related(
+            Prefetch(
+                "options__images",
+                queryset=ShoeOptionImage.objects.all(),
+                to_attr="prefetched_images",
+            ),
+            Prefetch(
+                "options__sizes",
+                queryset=ShoeOptionSize.objects.select_related("size"),
+                to_attr="prefetched_sizes",
+            ),
+            "options__color",
+        )
+        .first()
+    )
+
+    if not shoe:
+        return Http404()
+
     previous_color = request.GET.get("previous-color")
-    selected_color = request.GET.get("color")
-    selected_size = request.GET.get("size")
-    change_color = previous_color != selected_color
-    product_data = product_detail_handler(shoe, selected_color, selected_size)
+    selected_color_uuid = request.GET.get("color")
+    selected_size_uuid = request.GET.get("size")
+
+    change_color = previous_color != selected_color_uuid
+    product_detail = product_detail_handler(
+        shoe,
+        selected_color_uuid,
+        selected_size_uuid if not change_color else None,
+    )
 
     context = {
         "change_color": change_color,
-        **product_data,
+        **product_detail,
     }
-    return render(request, "htmx/product_price.html", context)
+    return render(request, "htmx/product_selection_update.html", context)
 
 
 def product_action(request):
     if request.method == "POST":
         post_data = request.POST.copy()
-        option_uuid = post_data.get("selected-option")
-        shoe_option = get_object_or_404(ShoeOption, uuid=option_uuid)
+        option_uuid = post_data.get("selected-option-size")
+        shoe_option_size = get_object_or_404(ShoeOptionSize, uuid=option_uuid)
         quantity = int(post_data.get("quantity", 1))
         action = post_data.get("action")
 
         if action == "add-to-cart" and quantity > 0:
             cart, created = ShoppingCart.objects.get_or_create(user=request.user)
             item, item_created = LineItem.objects.get_or_create(
-                cart=cart, shoe_option=shoe_option, defaults={"quantity": quantity}
+                cart=cart,
+                shoe_option_size=shoe_option_size,
+                defaults={"quantity": quantity},
             )
 
             if not item_created:
@@ -255,4 +290,66 @@ def product_action(request):
 
             messages.success(request, "Thêm vào giỏ hàng thành công.")
 
-    return HttpResponse(status=204)
+    return render(request, "htmx/product_action.html")
+
+
+def cart_item_action(request, uuid):
+    cart = get_object_or_404(ShoppingCart, user=request.user)
+    item = LineItem.objects.filter(uuid=uuid, cart=cart).first()
+
+    if not item:
+        return Http404()
+
+    change_total_price = False
+    checked_change = False
+    change_quantity = False
+    action = request.GET.get("action")
+    item_checked = request.GET.get("item-checked", "off")
+    selected_item_uuids = request.GET.getlist("selected-item-uuid", [])
+
+    if action == "checked-change":
+        change_total_price = True
+        checked_change = True
+        if item_checked == "on":
+            selected_item_uuids.append(item.uuid)
+        elif item.uuid in selected_item_uuids:
+            selected_item_uuids.remove(item.uuid)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        action = post_data.get("action")
+        item_checked = post_data.get("item-checked", "off")
+        item_quantity = int(post_data.get("item-quantity", 1))
+        selected_item_uuids = post_data.getlist("selected-item-uuid", [])
+        change_total_price = item_checked == "on"
+
+        if action == "change-quantity" and item_quantity > 0:
+            if change_total_price:
+                selected_item_uuids.append(item.uuid)
+            elif item.uuid in selected_item_uuids:
+                selected_item_uuids.remove(item.uuid)
+            change_quantity = True
+            item.quantity = item_quantity
+            item.save()
+
+        if action == "delete-cart-item":
+            if item.uuid in selected_item_uuids:
+                selected_item_uuids.remove(item.uuid)
+                change_total_price = True
+            checked_change = True
+            item.delete()
+
+    total_price_data = (
+        cart_item_total_price_handler(cart, selected_item_uuids)
+        if change_total_price
+        else {}
+    )
+
+    context = {
+        "item": item,
+        "change_total_price": change_total_price,
+        "checked_change": checked_change,
+        "change_quantity": change_quantity,
+        **total_price_data,
+    }
+    return render(request, "htmx/cart_item_action.html", context)

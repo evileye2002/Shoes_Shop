@@ -11,6 +11,7 @@ django-filter
 django-jazzmin
 django_ckeditor_5
 django-cotton
+django-import-export
 
 pillow
 crispy-tailwind

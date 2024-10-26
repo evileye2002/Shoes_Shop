@@ -3,43 +3,25 @@
 <div class="p-6 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
   <div class="w-full h-56">
     {# prettier-ignore #}
-    <a href="{% url 'product' shoe.uuid %}" class="flex items-center h-full">
-      <img class="w-full" src="{{ data.options.0.images.all.0.image.url }}" alt="{{ shoe.name }}" />
+    <a href="{% url 'product' shoe.uuid %}" class="flex items-center justify-center h-full">
+      <img class="max-h-full " src="{{ shoe.options.all.0.images.all.0.image.url }}" alt="{{ shoe.name }}" />
     </a>
   </div>
   <div class="pt-6">
     <div class="flex items-center justify-between gap-4 mb-4">
-      {% if data.max_discount %}
-        <span class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">Giảm giá đến {{ data.max_discount }}%</span>
+      {% if shoe.max_discount %}
+        <span class="rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">Giảm giá đến {{ shoe.max_discount }}%</span>
       {% else %}
-        <span class="me-2 rounded bg-primary-100 px-2.5 py-0.5 text-xs font-medium text-primary-800 dark:bg-primary-900 dark:text-primary-300">Còn hàng</span>
+        <span class="h-5"></span>
       {% endif %}
-
-      <div class="flex items-center justify-end gap-1">
-        {# prettier-ignore #}
-        <c-button 
-          style="light" 
-          data-tooltip-target="tooltip-quick-look-{{ shoe.uuid }}"
-          class="px-2 py-2 !text-gray-500 hover:!text-gray-900 border-0 rounded-lg">
-          <c-slot name="start_slot">
-            <div class="flex items-center justify-center size-5">
-              <i class="fa-regular fa-eye"></i>
-            </div>
-          </c-slot>
-        </c-button>
-
-        <div id="tooltip-quick-look-{{ shoe.uuid }}" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700" data-popper-placement="top">
-          Chi tiết<div class="tooltip-arrow" data-popper-arrow=""></div>
-        </div>
-      </div>
     </div>
 
     <a href="{% url 'product' shoe.uuid %}" class="flex min-h-[45px] max-h-[45px] overflow-y-hidden text-lg font-semibold leading-tight text-gray-900 hover:underline dark:text-white">{{ shoe.name }}</a>
 
     <div class="flex items-center gap-2 mt-2">
       <div class="flex items-center">
-        {% for i in data.review_range %}
-          {% if i < data.review_avg_int %}
+        {% for i in review_range %}
+          {% if i < shoe.avg_review %}
             <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
               <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
             </svg>
@@ -51,36 +33,22 @@
         {% endfor %}
       </div>
 
-      <p class="text-sm font-medium text-gray-900 dark:text-white">{{ data.review_avg }}</p>
-      <p class="text-sm font-medium text-gray-500 dark:text-gray-400">({{ data.review_count }})</p>
+      <p class="text-sm font-medium text-gray-900 dark:text-white">{{ shoe.avg_review|default:'0,0' }}</p>
+      <p class="text-sm font-medium text-gray-500 dark:text-gray-400">({{ shoe.total_reviews|default:0 }})</p>
     </div>
 
-    <ul class="flex items-center gap-4 mt-2 overflow-x-hidden whitespace-nowrap">
-      <li class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h6l2 4m-8-4v8m0-8V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v9h2m8 0H9m4 0h2m4 0h2v-4m0 0h-5m3.5 5.5a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Zm-10 0a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0Z" />
-        </svg>
-        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Fast Delivery</p>
-      </li>
-
-      <li class="flex items-center gap-2">
-        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="M8 7V6c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1h-1M3 18v-7c0-.6.4-1 1-1h11c.6 0 1 .4 1 1v7c0 .6-.4 1-1 1H4a1 1 0 0 1-1-1Zm8-3.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-        </svg>
-        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Best Price</p>
-      </li>
+    <ul class="flex items-center gap-2 mt-2 overflow-x-hidden whitespace-nowrap">
+      {% for tag in shoe.tags.all %}
+        <li class="flex items-center gap-2">
+          <p class="text-sm font-medium text-gray-500 border rounded-lg py-0.5 px-1 border-gray-200 dark:text-gray-400">{{ tag }}</p>
+        </li>
+      {% endfor %}
     </ul>
 
     <div class="flex items-center justify-between gap-4 mt-4">
       <div class="">
-        <p class="text-2xl font-extrabold leading-tight text-primary-500 dark:text-white">{{ data.min_price|int_comma }}đ</p>
+        <p class="text-2xl font-extrabold leading-tight text-primary-500 dark:text-white">{{ shoe.min_price|int_comma }}đ</p>
       </div>
-
-      <c-button>
-        <c-slot name="start_slot">
-          <i class="fa-solid fa-cart-shopping"></i>
-        </c-slot>
-      </c-button>
     </div>
   </div>
 </div>

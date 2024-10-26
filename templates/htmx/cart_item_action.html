@@ -1,0 +1,54 @@
+{% load util_tags %}
+
+{% if checked_change %}
+  <ul id="selected-item-uuids" hx-swap-oob="true" class="hidden">
+    {% for selected_item in selected_items %}
+      <li>
+        <input cart-item-uuid="{{ selected_item.uuid }}" checked-change type="text" class="hidden" name="selected-item-uuid" value="{{ selected_item.uuid }}" />
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% if change_quantity %}
+  <div id="item-price-{{ item.uuid }}" hx-swap-oob="true" class="text-end md:order-3 md:w-32">
+    {% if item.get_total_old_price|default:0 > 0 %}
+      <div class="text-sm font-medium text-gray-500 line-through">{{ item.get_total_old_price|default:0|int_comma }}đ</div>
+    {% endif %}
+    <p class="text-lg font-bold text-primary-500 dark:text-white">{{ item.get_total_price|default:0|int_comma }}đ</p>
+  </div>
+{% endif %}
+
+{% if change_total_price %}
+  <div id="total-price-div" hx-swap-oob="true" class="flex-1 max-w-4xl mx-auto mt-6 space-y-6 lg:mt-0 lg:w-full">
+    <div class="p-4 space-y-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+      <p class="text-xl font-semibold text-gray-900 dark:text-white">Giỏ hàng</p>
+
+      <div class="space-y-4">
+        <div class="space-y-2">
+          <dl class="flex items-center justify-between gap-4">
+            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tổng tiền</dt>
+            <dd class="text-base font-medium text-gray-900 dark:text-white">{{ total_item_price|int_comma }}đ</dd>
+          </dl>
+
+          <dl class="flex items-center justify-between gap-4">
+            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Thuế (10%)</dt>
+            <dd class="text-base font-medium text-gray-900 dark:text-white">{{ tax|int_comma }}đ</dd>
+          </dl>
+
+          <dl class="flex items-center justify-between gap-4">
+            <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tiết kiệm</dt>
+            <dd class="text-base font-medium text-green-600">-{{ saving|int_comma }}đ</dd>
+          </dl>
+        </div>
+
+        <dl class="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+          <dt class="text-base font-bold text-gray-900 dark:text-white">Tổng thành tiền</dt>
+          <dd class="text-base font-bold text-gray-900 dark:text-white">{{ total_price|int_comma }}đ</dd>
+        </dl>
+      </div>
+
+      <a href="#" class="flex w-full items-center justify-center rounded-lg bg-primary-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-800 focus:outline-none focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800">Mua hàng</a>
+    </div>
+  </div>
+{% endif %}

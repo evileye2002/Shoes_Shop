@@ -11,6 +11,15 @@ urlpatterns = [
     path("update_address/<str:id>", views.update_address, name="htmx_update_address"),
     path("delete_address/<str:id>", views.delete_address, name="htmx_delete_address"),
     # Core
-    path("product_price/<str:uuid>", views.product_price, name="htmx_product_price"),
+    path(
+        "product_selection_update/<str:uuid>",
+        views.product_selection_update,
+        name="htmx_product_selection_update",
+    ),
     path("product_action", views.product_action, name="htmx_product_action"),
+    path(
+        "cart_item_action/<str:uuid>",
+        views.cart_item_action,
+        name="htmx_cart_item_action",
+    ),
 ]

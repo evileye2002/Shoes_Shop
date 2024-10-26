@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "django_filters",
     "django_ckeditor_5",
     "django_cotton",
+    "import_export",
     "django.contrib.sites",
     "allauth",
     "allauth.account",
@@ -115,7 +116,7 @@ AUTH_USER_MODEL = "base_account.UserCustom"
 LOGIN_URL = "/account/sign_in"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
-SITE_ID = 3
+SITE_ID = 1
 X_FRAME_OPTIONS = "SAMEORIGIN"
 
 
@@ -161,7 +162,7 @@ JAZZMIN_UI_TWEAKS = {
     "sidebar_nav_compact_style": False,
     "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
-    "theme": "minty",
+    "theme": "default",
     "dark_mode_theme": None,
     "button_classes": {
         "primary": "btn-primary",

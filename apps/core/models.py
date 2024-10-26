@@ -34,7 +34,7 @@ class Shoe(AbstractTimestamp):
         verbose_name="Thương hiệu",
     )
 
-    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="S")
+    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="SHOE")
     name = models.CharField(max_length=200, verbose_name="Tên giày")
     tags = models.ManyToManyField(
         Tag,
@@ -53,23 +53,13 @@ class Shoe(AbstractTimestamp):
 
 
 class ShoeOption(AbstractTimestamp):
-    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="SO")
-    old_price = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        null=True,
-        blank=True,
-        verbose_name="Giá cũ",
-    )
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Giá")
-    quantity = models.PositiveIntegerField(verbose_name="Số lượng")
+    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="OPTION")
 
-    size = models.ForeignKey(
-        Size,
-        on_delete=models.SET_NULL,
-        null=True,
+    shoe = models.ForeignKey(
+        Shoe,
+        on_delete=models.CASCADE,
         related_name="options",
-        verbose_name="Kích cỡ",
+        verbose_name="Giày",
     )
     color = models.ForeignKey(
         Color,
@@ -78,20 +68,13 @@ class ShoeOption(AbstractTimestamp):
         related_name="options",
         verbose_name="Màu sắc",
     )
-    shoe = models.ForeignKey(
-        Shoe,
-        on_delete=models.CASCADE,
-        related_name="options",
-        verbose_name="Giày",
-    )
 
     class Meta:
-        ordering = ["shoe", "size"]
         verbose_name_plural = "Chi tiết giày"
         verbose_name = "Chi tiết giày"
 
     def __str__(self) -> str:
-        return f"{self.shoe.uuid} {self.color} {self.size}"
+        return f"{self.shoe.uuid} - Màu: {self.color}"
 
 
 class ShoeOptionImage(models.Model):
@@ -107,11 +90,43 @@ class ShoeOptionImage(models.Model):
     )
 
     class Meta:
-        verbose_name_plural = "Ảnh"
-        verbose_name = "Ảnh"
+        ordering = ["image"]
+        verbose_name_plural = "Ảnh sản phẩm"
+        verbose_name = "Ảnh sản phẩm"
 
     def __str__(self):
         return f"Image for {self.shoe_option.shoe.name} ({self.shoe_option.color})"
+
+
+class ShoeOptionSize(models.Model):
+    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="SIZE")
+    shoe_option = models.ForeignKey(
+        ShoeOption,
+        related_name="sizes",
+        on_delete=models.CASCADE,
+    )
+    size = models.ForeignKey(
+        Size,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="Kích cỡ",
+    )
+    old_price = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        verbose_name="Giá cũ",
+    )
+    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Giá")
+    quantity = models.PositiveIntegerField(verbose_name="Số lượng")
+
+    class Meta:
+        verbose_name_plural = "Kích cỡ sản phẩm"
+        verbose_name = "Kích cỡ sản phẩm"
+
+    def __str__(self):
+        return f"{self.shoe_option.uuid} - Kích cỡ: {self.size}"
 
 
 class Review(AbstractTimestamp):
@@ -148,7 +163,7 @@ class Order(AbstractTimestamp):
         unique=True,
         length=10,
         max_length=20,
-        prefix="O",
+        prefix="ORDER",
         verbose_name="Mã đơn hàng",
     )
     total_payment = models.DecimalField(
@@ -191,11 +206,12 @@ class Order(AbstractTimestamp):
 
 
 class ShoppingCart(AbstractTimestamp):
-    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="SC")
+    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="CART")
 
     user = models.OneToOneField(
         User,
         on_delete=models.CASCADE,
+        related_name="carts",
         verbose_name="Người dùng",
     )
 
@@ -209,19 +225,20 @@ class ShoppingCart(AbstractTimestamp):
 
 
 class LineItem(AbstractTimestamp):
-    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="SC")
+    uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="ITEM")
     quantity = models.PositiveIntegerField(verbose_name="Số lượng")
 
-    shoe_option = models.ForeignKey(
-        ShoeOption,
+    shoe_option_size = models.ForeignKey(
+        ShoeOptionSize,
         on_delete=models.CASCADE,
-        verbose_name="Chi tiết sản phẩm",
+        verbose_name="Kích cỡ",
     )
     cart = models.ForeignKey(
         ShoppingCart,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
+        related_name="items",
         verbose_name="Giỏ Hàng",
     )
     order = models.ForeignKey(
@@ -239,3 +256,9 @@ class LineItem(AbstractTimestamp):
 
     def __str__(self) -> str:
         return self.uuid
+
+    def get_total_price(self):
+        return self.shoe_option_size.price * self.quantity
+
+    def get_total_old_price(self):
+        return self.shoe_option_size.old_price * self.quantity
