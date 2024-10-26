@@ -1,0 +1,78 @@
+{% extends 'core/base.html' %}
+{% load static util_tags breadcrumb_tags crispy_forms_tags %}
+
+{% block hscript %}
+  <script src="{% static 'js/input-counter.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+  <div class="py-8 antialiased bg-gray-50 dark:bg-gray-900 md:py-12">
+    <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+      <div class="items-end justify-between mb-4 space-y-4 sm:flex sm:space-y-0 md:mb-8">
+        <div>
+          {% show_breadcrumbs breadcrumbs last_crum %}
+        </div>
+      </div>
+
+      <section id="cart-items" class="">
+        <div class="mt-6 sm:mt-8 md:gap-6 md:flex lg:items-start xl:gap-8">
+          <div class="flex-none w-full mx-auto md:max-w-md">
+            <div class="space-y-6">
+              {% for data in selected_items %}
+                {# prettier-ignore #}
+                <c-lineitem-card 
+                  :orderitem="True"
+                  :item="data" 
+                  :option="data.shoe_option_size.shoe_option" 
+                  :shoe="data.shoe_option_size.shoe_option.shoe" 
+                  :itemimage="data.shoe_option_size.shoe_option.images.all.0">
+                </c-lineitem-card>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div id="total-price-div" class="flex-1 max-w-4xl mx-auto mt-6 space-y-6 md:mt-0 lg:w-full">
+            <div class="p-4 space-y-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:p-6">
+              <p class="text-xl font-semibold text-gray-900 dark:text-white">Đơn hàng</p>
+
+              <div class="space-y-4">
+                <div class="space-y-2">
+                  <dl class="flex items-center justify-between gap-4">
+                    <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Tạm tính</dt>
+                    <dd class="text-base font-medium text-gray-900 dark:text-white">{{ total_price|int_comma }}đ</dd>
+                  </dl>
+
+                  <dl class="flex items-center justify-between gap-4">
+                    <dt class="text-base font-normal text-gray-500 dark:text-gray-400">Phí vận chuyển</dt>
+                    <dd class="text-base font-medium text-gray-900 dark:text-white">{{ shipping_fee|int_comma }}đ</dd>
+                  </dl>
+                </div>
+
+                <dl class="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+                  <dt class="text-base font-bold text-gray-900 dark:text-white">Tổng giá trị đơn hàng</dt>
+                  <dd class="text-base font-bold text-gray-900 dark:text-white">{{ total_order_price|int_comma }}đ</dd>
+                </dl>
+              </div>
+            </div>
+
+            <div class="p-4 mt-6 bg-white border border-gray-200 rounded-lg shadow-sm sm:p-6">
+              <form action="{{ request.path }}{% querystring %}" method="post">
+                <ul id="selected-item-uuids-checkout" class="hidden">
+                  {% for selected_item in selected_items %}
+                    <li>
+                      <input cart-item-uuid="{{ selected_item.uuid }}" checked-change type="text" class="hidden" name="siu" value="{{ selected_item.uuid }}" />
+                    </li>
+                  {% endfor %}
+                </ul>
+
+                <input type="text" name="total-order-price" value="{{ total_order_price }}" class="hidden" />
+
+                {% crispy form %}
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+{% endblock %}

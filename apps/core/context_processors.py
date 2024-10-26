@@ -15,6 +15,10 @@ BREADCRUMB_NAME_MAP = {
         "label": "Giỏ hàng của bạn",
         "url": False,
     },
+    "ordering": {
+        "label": "Đặt hàng",
+        "url": False,
+    },
 }
 
 

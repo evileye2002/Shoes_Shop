@@ -11,6 +11,7 @@ from .models import (
     ShoppingCart,
     LineItem,
     Review,
+    Payment,
 )
 
 
@@ -105,6 +106,13 @@ class ShoppingCartAdmin(ImportExportModelAdmin):
     search_fields = ("uuid", "user__username")
     readonly_fields = ("uuid",)
     inlines = [LineItemInline]
+
+
+@admin.register(Payment)
+class PaymentAdmin(ImportExportModelAdmin):
+    list_display = ("order_id", "amount", "bank_code")
+    search_fields = ("order_id",)
+    readonly_fields = ("order_id",)
 
 
 admin.site.register(ShoeOptionSize, ImportExportModelAdmin)

@@ -163,7 +163,7 @@ class Order(AbstractTimestamp):
         unique=True,
         length=10,
         max_length=20,
-        prefix="ORDER",
+        alphabet="0123456789",
         verbose_name="Mã đơn hàng",
     )
     total_payment = models.DecimalField(
@@ -261,4 +261,20 @@ class LineItem(AbstractTimestamp):
         return self.shoe_option_size.price * self.quantity
 
     def get_total_old_price(self):
-        return self.shoe_option_size.old_price * self.quantity
+        if self.shoe_option_size.old_price:
+            return self.shoe_option_size.old_price * self.quantity
+        else:
+            return 0
+
+
+class Payment(models.Model):
+    order_id = models.CharField("Mã đơn hàng", max_length=20)
+    amount = models.IntegerField("Giá trị đơn hàng")
+    order_desc = models.CharField("Mô tả đơn hàng", max_length=100)
+    bank_code = models.CharField("Mã ngân hàng", max_length=20, blank=True, null=True)
+    pay_date = models.CharField("Ngày thanh toán", max_length=20)
+
+    class Meta:
+        ordering = ["-pay_date"]
+        verbose_name_plural = "Lịch sử thanh toán"
+        verbose_name = "Lịch sử thanh toán"

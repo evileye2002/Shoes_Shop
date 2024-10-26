@@ -18,13 +18,14 @@ class Command(BaseCommand):
             "Converse",
             "Vans",
             "Kappa",
+            "Ecko Unltd",
         ]
         tags = [
             "Giày thể thao",
             "Sneaker",
             "Giày chạy bộ",
-            "Hàng mới",
-            "Sale",
+            "Giày công sở",
+            "Giày đẹp",
         ]
         sizes = ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"]
         colors = [
