@@ -55,6 +55,68 @@
 
 <input hx-swap-oob="true" id="selected-option-size" type="text" class="hidden" name="selected-option-size" value="{{ selected_size.uuid }}" />
 
+{# prettier-ignore #}
+<div 
+  id="quantity-div" 
+  hx-swap-oob="true" 
+  data-input-counter-max="{{ selected_size.quantity }}" 
+  data-input-id="quantity-input-{{ selected_size.uuid }}" 
+  data-increment-id="increment-button-{{ selected_size.uuid }}" 
+  data-decrement-id="decrement-button-{{ selected_size.uuid }}">
+
+  <label for="quantity-input-{{ selected_size.uuid }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn số lượng:</label>
+  <div class="relative flex items-center max-w-[50%]">
+    {# prettier-ignore #}
+    <button 
+      type="button" 
+      id="decrement-button-{{ selected_size.uuid }}"  
+      class="px-2 py-1.5 h-[34px] bg-gray-100 border border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 rounded-s-lg focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+      <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
+      </svg>
+    </button>
+
+    {# prettier-ignore #}
+    <input 
+      id="quantity-input-{{ selected_size.uuid }}" 
+      type="text" 
+      name="quantity" 
+      value="1" 
+      required 
+      class="bg-gray-50 border-x-0 focus:border-gray-300 focus:outline-none focus:ring-0  border-gray-300 text-center text-gray-900 text-sm w-full py-1.5 " 
+    />
+
+    {# prettier-ignore #}
+    <button 
+      type="button" 
+      id="increment-button-{{ selected_size.uuid }}" 
+      class="px-2 py-1.5 h-[34px] bg-gray-100 border border-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:border-gray-600 hover:bg-gray-200 rounded-e-lg focus:ring-gray-100 dark:focus:ring-gray-700 focus:ring-2 focus:outline-none">
+      <svg class="w-3 h-3 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+      </svg>
+    </button>
+  </div>
+
+  <script>
+    ;(function () {
+      var $parent = document.currentScript.parentElement
+      var inputID = $parent.getAttribute('data-input-id')
+      var incrementID = $parent.getAttribute('data-increment-id')
+      var decrementID = $parent.getAttribute('data-decrement-id')
+      var maxValue = $parent.getAttribute('data-input-counter-max')
+      var options = {
+        minValue: 1,
+        maxValue
+      }
+      initCustomInputCounter(inputID, incrementID, decrementID, options)
+    })()
+  </script>
+</div>
+
+<div id="quantity-label" hx-swap-oob="true" class="text-sm font-medium text-gray-900 dark:text-white">
+  Còn <span class="font-bold">{{ selected_size.quantity|stringformat:'02d' }}</span> sản phẩm <span class="hidden sm:inline">trong kho</span>
+</div>
+
 {% if change_color %}
   <div id="product-images-carousel" class="relative w-full dark" data-carousel="static" hx-swap-oob="true">
     <div class="relative z-0 h-56 overflow-hidden sm:h-96">

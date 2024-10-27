@@ -10,6 +10,7 @@
       hx-swap="none"  
       id="cart-item-{{ item.uuid }}" 
       cart-item-uuid="{{ item.uuid }}" 
+      {% if item.shoe_option_size.quantity == 0 %}disabled{% endif %}
       checked-change
       quantity-change
       type="checkbox" 
@@ -20,7 +21,7 @@
 
   <input cart-item-uuid="{{ item.uuid }}" checked-change type="text" class="hidden" name="action" value="checked-change">
 
-  <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 peer-checked:border-primary-500">
+  <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800 peer-checked:border-primary-500 peer-disabled:bg-gray-200">
     <label {% if not orderitem %}for="cart-item-{{ item.uuid }}"{% endif %} class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
       <a href="#" class="shrink-0 md:order-1">
         <div class="flex items-center size-20">
@@ -34,50 +35,64 @@
           data-input-id="quantity-input-{{ item.uuid }}"
           data-increment-id="increment-button-{{ item.uuid }}"
           data-decrement-id="decrement-button-{{ item.uuid }}"
+          data-input-counter-max="{{ item.shoe_option_size.quantity }}"
           class="flex items-center justify-between md:gap-5 md:order-3 md:justify-end">
           
           <input cart-item-uuid="{{ item.uuid }}" quantity-change type="text" class="hidden" name="action" value="change-quantity" />
 
-          <div class="flex items-center">
-            {# prettier-ignore #}
-            <button 
-              data-input-counter-decrement="quantity-input-{{ item.uuid }}" 
-              type="button" 
-              id="decrement-button-{{ item.uuid }}" 
-              class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-              <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
-              </svg>
-            </button>
-
-            {# prettier-ignore #}
-            <input 
-              hx-post="{% url 'htmx_cart_item_action' item.uuid %}"
-              hx-include="input[cart-item-uuid='{{ item.uuid }}'][quantity-change],#selected-item-uuids"
-              hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-              hx-trigger="change" 
-              hx-swap="none"  
-              cart-item-uuid="{{ item.uuid }}"
-              quantity-change
-              data-input-counter 
-              id="quantity-input-{{ item.uuid }}" 
-              value="{{ item.quantity }}" 
-              type="text" 
-              name="item-quantity"
-              autocomplete="off"
-              class="w-10 text-sm font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white" 
-              required />
-
-            {# prettier-ignore #}
-            <button
-              data-input-counter-increment="quantity-input-{{ item.uuid }}" 
-              id="increment-button-{{ item.uuid }}" 
-              type="button" 
-              class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
-              <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
-              </svg>
-            </button>
+          <div class="flex flex-col items-center w-24">
+            <div class="flex items-center">
+              {# prettier-ignore #}
+              <button 
+                data-input-counter-decrement="quantity-input-{{ item.uuid }}" 
+                type="button" 
+                id="decrement-button-{{ item.uuid }}" 
+                class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
+                <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 2">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h16" />
+                </svg>
+              </button>
+  
+              {# prettier-ignore #}
+              <input 
+                hx-post="{% url 'htmx_cart_item_action' item.uuid %}"
+                hx-include="input[cart-item-uuid='{{ item.uuid }}'][quantity-change],#selected-item-uuids"
+                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                hx-trigger="change" 
+                hx-swap="none"  
+                cart-item-uuid="{{ item.uuid }}"
+                {% if item.shoe_option_size.quantity == 0 %}disabled{% endif %}
+                quantity-change
+                data-input-counter 
+                id="quantity-input-{{ item.uuid }}" 
+                value="{{ item.quantity }}" 
+                type="text" 
+                name="item-quantity"
+                autocomplete="off"
+                class="w-10 text-sm font-medium text-center text-gray-900 bg-transparent border-0 shrink-0 focus:outline-none focus:ring-0 dark:text-white" 
+                required />
+  
+              {# prettier-ignore #}
+              <button
+                data-input-counter-increment="quantity-input-{{ item.uuid }}" 
+                id="increment-button-{{ item.uuid }}" 
+                type="button" 
+                class="inline-flex items-center justify-center w-5 h-5 bg-gray-100 border border-gray-300 rounded-md shrink-0 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600 dark:focus:ring-gray-700">
+                <svg class="h-2.5 w-2.5 text-gray-900 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 1v16M1 9h16" />
+                </svg>
+              </button>
+            </div>
+            {% if item.shoe_option_size.quantity > 0 %}
+            <p class="text-xs font-medium text-gray-900">
+              <!-- -->
+              Còn <span class="font-bold">{{ item.shoe_option_size.quantity|stringformat:'02d' }}</span> sản phẩm
+            </p>
+            {% else %}
+            <p class="text-xs font-medium text-red-500">
+              Đã hết hàng
+            </p>
+            {% endif %}
           </div>
           <div class="flex items-center gap-5">
             <div id="item-price-{{ item.uuid }}" class="text-end md:order-3 md:w-32">
@@ -108,7 +123,12 @@
               var inputID = $parent.getAttribute('data-input-id')
               var incrementID = $parent.getAttribute('data-increment-id')
               var decrementID = $parent.getAttribute('data-decrement-id')
-              initCartItemInputCounter(inputID, incrementID, decrementID)
+              var maxValue = $parent.getAttribute('data-input-counter-max')
+              var options = {
+                minValue: 1,
+                maxValue
+              }
+              initCartItemInputCounter(inputID, incrementID, decrementID, options)
             })()
           </script>
         </div>

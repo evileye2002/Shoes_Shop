@@ -1,0 +1,67 @@
+{% load util_tags %}
+
+{# prettier-ignore #}
+<form 
+    hx-post="{% url 'htmx_order_action' %}"
+    hx-trigger="submit"
+    hx-target="this"
+    class="mt-2">
+    {% csrf_token %}
+    <input type="text" name="order-uuid" value="{{ order.uuid }}" class="hidden">
+
+    <div class="p-3 border border-gray-200 rounded-lg shadow-sm">
+    <div class="flex items-center justify-between gap-4">
+        <p class="text-xl font-bold text-gray-900">#{{ order.uuid }}</p>
+        {% if order.status == 'cannceled' %}
+        <div class="border border-red-300 text-red-500 rounded-lg px-1.5 py-1 text-sm text-center font-medium shadow-sm">{{ order.get_status_display }}</div>
+        {% elif order.status == 'delivered' %}
+        <div class="border border-green-300 text-green-500 rounded-lg px-1.5 py-1 text-sm text-center font-medium shadow-sm">{{ order.get_status_display }}</div>
+        {% elif order.status == 'shipped' %}
+        <div class="border border-primary-300 text-primary-500 rounded-lg px-1.5 py-1 text-sm text-center font-medium shadow-sm">{{ order.get_status_display }}</div>
+        {% elif order.status == 'preparing' %}
+        <div class="border border-yellow-300 text-yellow-500 rounded-lg px-1.5 py-1 text-sm text-center font-medium shadow-sm">{{ order.get_status_display }}</div>
+        {% else %}
+        <div class="border border-gray-300 rounded-lg px-1.5 py-1 text-sm text-center font-medium shadow-sm">{{ order.get_status_display }}</div>
+        {% endif %}
+    </div>
+    <div class="flex items-center justify-between mt-2">
+        <div>
+        <p class="text-sm font-medium text-gray-500">Ngày đặt hàng</p>
+        <p class="text-sm font-bold text-gray-900">{{ order.created_at|natural_time }}</p>
+        </div>
+        <div class="text-end">
+        <p class="text-sm font-medium text-gray-500">Phương thức thanh toán</p>
+        <p class="text-sm font-bold text-gray-900">{{ order.get_payment_method_display }}</p>
+        </div>
+    </div>
+    <div class="flex items-center justify-between mt-2">
+        <div>
+        <p class="text-sm font-medium text-gray-500">Cập nhật lần cuối</p>
+        <p class="text-sm font-bold text-gray-900">{{ order.updated_at|natural_time }}</p>
+        </div>
+        <div class="text-end">
+        <p class="text-sm font-medium text-gray-500">Tổng giá trị đơn hàng</p>
+        <p class="text-sm font-bold text-gray-900">{{ order.total_payment|int_comma }}đ</p>
+        </div>
+    </div>
+    <div class="flex items-center justify-end gap-4 mt-4 {% if order.status == 'cannceled' or order.status == 'delivered' %}hidden{% endif %}">
+        {% if user == order.user %}
+            {% if order.status == 'shipped' %}
+            <c-button data-tooltip-target="tooltip-cancel-order" :isdisabled="True" overideclass="!px-2" style="error" type="submit" name="action" value="cancel-order">Hủy đơn</c-button>
+            <div id="tooltip-cancel-order" role="tooltip" class="absolute z-10 invisible inline-block px-3 py-2 text-sm font-medium text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm opacity-0 tooltip dark:bg-gray-700">
+                Hàng đang vận chuyển không thể hủy đơn.
+                <div class="tooltip-arrow" data-popper-arrow></div>
+            </div>
+            <c-button overideclass="!px-2" type="submit" name="action" value="delivered">Đã nhận được hàng</c-button>
+            {% elif not order.status == 'cannceled' and not order.status == 'delivered' %}
+            <c-button overideclass="!px-2" style="error" type="submit" name="action" value="cancel-order">Hủy đơn</c-button>
+            <c-button :isdisabled="True" overideclass="!px-2" type="submit" name="action" value="delivered">Đã nhận được hàng</c-button>
+            {% endif %}
+        {% endif %}
+
+        <script>
+          initTooltips()
+        </script>
+    </div>
+    </div>
+</form>

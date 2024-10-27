@@ -17,6 +17,7 @@ urlpatterns = [
         name="htmx_product_selection_update",
     ),
     path("product_action", views.product_action, name="htmx_product_action"),
+    path("order_action", views.order_action, name="htmx_order_action"),
     path(
         "cart_item_action/<str:uuid>",
         views.cart_item_action,

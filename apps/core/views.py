@@ -145,6 +145,7 @@ def ordering(request):
         action = post_data.get("action")
 
         if action == "checkout":
+            # TODO: Check item quantity before checkout
             form = OrderForm(request.POST, user=request.user)
             if form.is_valid():
                 payment_method = form.cleaned_data["payment_method"]
@@ -157,7 +158,9 @@ def ordering(request):
                     item.order = order
                     item.save()
 
-                redirect_url = "/payment_return?vnp_ResponseCode=-1"
+                redirect_url = (
+                    f"/payment_return?vnp_ResponseCode=-1&vnp_TxnRef={order.uuid}"
+                )
                 if payment_method == PaymentMethods.ONLINE_PAYMENT:
                     redirect_url = create_payment(
                         request,
@@ -180,11 +183,21 @@ def ordering(request):
 
 def payment_return(request):
     res_code = request.GET.get("vnp_ResponseCode")
+    order_id = request.GET.get("vnp_TxnRef")
 
-    if not res_code:
+    if not res_code or not order_id:
         return HttpResponse(status=404)
 
-    response_data = {"res_code": res_code}
+    response_data = {
+        "res_code": res_code,
+        "order_id": order_id,
+    }
+
+    order = get_object_or_404(
+        Order,
+        uuid=order_id,
+        user=request.user,
+    )
 
     if res_code == "00":
         response_data = {**payment_return_handler(request), **response_data}
@@ -194,7 +207,6 @@ def payment_return(request):
             amount=response_data["amount"],
             bank_code=response_data["bank_code"],
         )
-        order = get_object_or_404(Order, uuid=response_data["order_id"])
         order.status = OrderStatus.PREPARING
         order.save()
 

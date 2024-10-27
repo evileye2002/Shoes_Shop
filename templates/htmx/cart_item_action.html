@@ -79,3 +79,7 @@
     </div>
   </div>
 {% endif %}
+
+{% if delete_item %}
+  <div id="cart-item-indicator" hx-swap-oob="true" class="absolute inline-flex items-center justify-center text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full size-5 -top-1 -end-1 dark:border-gray-900">{{ user.carts.items.all.count|default:0 }}</div>
+{% endif %}

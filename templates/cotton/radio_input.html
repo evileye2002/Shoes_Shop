@@ -1,4 +1,4 @@
-<c-vars type="advance" label="" class />
+<c-vars type="advance" label="" isdisabled="None" ischecked="None" instance="None" class />
 
 {% if type == 'advance' %}
   {% if instance not in isdisabled %}
@@ -14,7 +14,7 @@
   {# prettier-ignore #}
   <label 
     for="{{ prefixid }}{{ id }}" 
-    class="inline-flex items-center justify-between w-full px-2 py-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 peer-disabled:cursor-not-allowed peer-disabled:hover:bg-gray-100 peer-disabled:bg-gray-100 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
+    class="inline-flex items-center justify-between w-full px-2 py-1 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-primary-500 peer-checked:border-primary-600 peer-checked:text-primary-600 peer-checked:hover:bg-primary-50 peer-disabled:cursor-not-allowed peer-disabled:hover:bg-gray-200 peer-disabled:bg-gray-200 hover:text-gray-800 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">
     {{ start_slot }}
     {% if label %}
         <div class="text-sm font-medium w-fit">{{ label }}</div>

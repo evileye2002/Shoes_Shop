@@ -217,9 +217,10 @@ def delete_address(request, id):
 from django.http import HttpResponse, Http404
 from django.db.models import F, Prefetch
 
+from apps.core.enums import OrderStatus
 from apps.core.models import (
     Shoe,
-    ShoeOption,
+    Order,
     ShoppingCart,
     LineItem,
     ShoeOptionSize,
@@ -276,8 +277,12 @@ def product_action(request):
         quantity = int(post_data.get("quantity", 1))
         action = post_data.get("action")
 
-        if action == "add-to-cart" and quantity > 0:
-            cart, created = ShoppingCart.objects.get_or_create(user=request.user)
+        if quantity > 0 and shoe_option_size.quantity < quantity:
+            messages.error(request, "Số lượng sản phẩm không hợp lệ.")
+            return HttpResponse(status=204)
+
+        if action == "add-to-cart":
+            cart, _ = ShoppingCart.objects.get_or_create(user=request.user)
             item, item_created = LineItem.objects.get_or_create(
                 cart=cart,
                 shoe_option_size=shoe_option_size,
@@ -303,6 +308,7 @@ def cart_item_action(request, uuid):
     change_total_price = False
     checked_change = False
     change_quantity = False
+    delete_item = False
     action = request.GET.get("action")
     item_checked = request.GET.get("item-checked", "off")
     selected_item_uuids = request.GET.getlist("selected-item-uuid", [])
@@ -323,7 +329,11 @@ def cart_item_action(request, uuid):
         selected_item_uuids = post_data.getlist("selected-item-uuid", [])
         change_total_price = item_checked == "on"
 
-        if action == "change-quantity" and item_quantity > 0:
+        if item_quantity > 0 and item.shoe_option_size.quantity < item_quantity:
+            messages.error(request, "Số lượng sản phẩm không hợp lệ.")
+            return HttpResponse(status=204)
+
+        if action == "change-quantity":
             if change_total_price:
                 selected_item_uuids.append(item.uuid)
             elif item.uuid in selected_item_uuids:
@@ -337,7 +347,9 @@ def cart_item_action(request, uuid):
                 selected_item_uuids.remove(item.uuid)
                 change_total_price = True
             checked_change = True
+            delete_item = True
             item.delete()
+            messages.success(request, "Xóa sản phảm thành công.")
 
     total_price_data = (
         cart_item_total_price_handler(cart, selected_item_uuids)
@@ -350,6 +362,43 @@ def cart_item_action(request, uuid):
         "change_total_price": change_total_price,
         "checked_change": checked_change,
         "change_quantity": change_quantity,
+        "delete_item": delete_item,
         **total_price_data,
     }
     return render(request, "htmx/cart_item_action.html", context)
+
+
+def order_action(request):
+    uuid = request.GET.get("order-uuid")
+    action = request.GET.get("action")
+
+    if action == "search":
+        order = Order.objects.filter(uuid=uuid).first()
+        if not order:
+            messages.error(request, "Đơn hàng không tồn tại.")
+            return HttpResponse(status=204)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        post_uuid = post_data.get("order-uuid")
+        action = post_data.get("action")
+
+        order = Order.objects.filter(uuid=post_uuid).first()
+        if not order:
+            messages.error(request, "Đơn hàng không tồn tại.")
+            return HttpResponse(status=204)
+
+        if action == "cancel-order":
+            order.status = OrderStatus.CANNCELED
+            order.save()
+            messages.success(request, "Hủy đơn hàng thành công.")
+
+        if action == "delivered":
+            order.status = OrderStatus.DELIVERED
+            order.save()
+            messages.success(request, "Xác nhận nhận hàng thành công.")
+
+    context = {
+        "order": order,
+    }
+    return render(request, "htmx/order_action.html", context)

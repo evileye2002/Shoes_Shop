@@ -1,13 +1,14 @@
 {% load coton_helper_tags %}
 
-<c-vars style="primary" role="button" type="button" class />
+<c-vars style="primary" role="button" type="button" isdisabled="False" class />
 
 {% if role == 'button' %}
   {# prettier-ignore #}
   <button 
     {{ attrs }}
+    {% if isdisabled %}disabled{% endif %}
     type="{{ type }}"
-    class="{{ class|default:'text-sm font-medium rounded-lg px-4 py-1.5 focus:ring-4 focus:outline-none' }} {{ style|get_button_classes }} {{ overideclass }}">
+    class="{{ class|default:'text-sm font-medium rounded-lg px-4 py-1.5 focus:ring-4 focus:outline-none disabled:bg-opacity-50 disabled:cursor-not-allowed' }} {{ style|get_button_classes }} {{ overideclass }}">
     {{ start_slot }}
     {{ slot }}
     {{ end_slot }}
@@ -15,8 +16,9 @@
 {% elif role == 'link' %}
   {# prettier-ignore #}
   <a 
+    {% if isdisabled %}disabled{% endif %}
     href="{{ href }}"
-    class="{{ class|default:'text-sm font-medium rounded-lg px-4 py-1.5 focus:ring-4 focus:outline-none' }} {{ style|get_button_classes }} {{ overideclass }}">
+    class="{{ class|default:'text-sm font-medium rounded-lg px-4 py-1.5 focus:ring-4 focus:outline-none disabled:bg-opacity-50 disabled:cursor-not-allowed' }} {{ style|get_button_classes }} {{ overideclass }}">
     {{ start_slot }}
     {{ slot }}
     {{ end_slot }}
