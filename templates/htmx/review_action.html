@@ -1,0 +1,92 @@
+{% load util_tags %}
+
+{% if not allow_user_review %}
+  <div class="flex items-center justify-center h-20 p-2 bg-red-200 border border-red-400 rounded-lg shadow-sm">
+    <p class="font-bold text-gray-700">Bạn cần mua hàng để đánh giá sản phẩm này.</p>
+  </div>
+{% else %}
+  <form hx-post="{% url 'htmx_review_action' %}" hx-trigger="submit" hx-on="htmx:afterRequest: this.reset()">
+    {% csrf_token %}
+
+    <input type="text" name="shoe-uuid" value="{{ shoe.uuid }}" class="hidden" />
+
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="col-span-2">
+        <div data-input-rating class="flex items-center">
+          <svg data-rating-star data-rating-point="1" class="text-yellow-300 cursor-pointer size-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+          <svg data-rating-star data-rating-point="2" class="text-yellow-300 cursor-pointer size-6 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+          <svg data-rating-star data-rating-point="3" class="text-yellow-300 cursor-pointer size-6 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+          <svg data-rating-star data-rating-point="4" class="text-yellow-300 cursor-pointer size-6 ms-2 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+          <svg data-rating-star data-rating-point="5" class="text-yellow-300 cursor-pointer size-6 ms-2 dark:text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
+            <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
+          </svg>
+          <span class="text-lg font-bold text-gray-900 select-none ms-2 dark:text-white"><span data-rating-label>5</span>.0 trên 5</span>
+          <input data-rating-value type="number" name="rating" value="5" class="hidden" />
+        </div>
+      </div>
+      <div class="col-span-2">
+        <label for="title" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tiêu đề</label>
+        <input type="text" minlength="10" maxlength="100" name="title" id="title" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-600 focus:ring-primary-600 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" required />
+      </div>
+      <div class="col-span-2">
+        <label for="review-description" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Mô tả</label>
+        <textarea id="review-description" name="description" minlength="50" maxlength="255" rows="6" class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-primary-500 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500" required></textarea>
+      </div>
+    </div>
+    <div class="flex justify-end gap-2">
+      <c-button type="submit">Đánh giá</c-button>
+    </div>
+  </form>
+  <script>
+    intInputRatings()
+  </script>
+{% endif %}
+
+{% if is_update_review %}
+  <div id="review-detail-1" hx-swap-oob="true" class="flex items-center mt-2">
+    <div class="flex items-center">
+      {% for i in review_range %}
+        {% if i < shoe.avg_review|default:0 %}
+          <svg class="w-4 h-4 text-yellow-300" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
+          </svg>
+        {% else %}
+          <svg class="w-4 h-4 text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path>
+          </svg>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <p class="text-sm font-medium text-gray-900 ms-2 dark:text-white">{{ shoe.avg_review|default:'0.0' }}</p>
+    <span class="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
+    <a href="#reviews" class="text-sm font-medium text-gray-900 underline hover:no-underline">{{ shoe.total_reviews }} đánh giá</a>
+  </div>
+
+  <div id="review-detail-2" hx-swap-oob="true" class="flex flex-col items-center justify-between sm:flex-row">
+    <div class="mx-auto">
+      <p class="text-3xl font-bold text-center text-gray-800 dark:text-white">{{ shoe.avg_review|default:'0.0' }}/5</p>
+      <div class="flex items-center justify-center mt-1">
+        {% for i in review_range %}
+          {% if i < shoe.avg_review|default:0 %}
+            <svg class="text-yellow-300 size-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z" />
+            </svg>
+          {% else %}
+            <svg class="text-gray-200 size-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M13.8 4.2a2 2 0 0 0-3.6 0L8.4 8.4l-4.6.3a2 2 0 0 0-1.1 3.5l3.5 3-1 4.4c-.5 1.7 1.4 3 2.9 2.1l3.9-2.3 3.9 2.3c1.5 1 3.4-.4 3-2.1l-1-4.4 3.4-3a2 2 0 0 0-1.1-3.5l-4.6-.3-1.8-4.2Z"></path>
+            </svg>
+          {% endif %}
+        {% endfor %}
+      </div>
+      <p class="mt-1 text-sm font-medium text-center text-gray-500">({{ shoe.total_reviews|int_comma }} đánh giá)</p>
+    </div>
+  </div>
+{% endif %}

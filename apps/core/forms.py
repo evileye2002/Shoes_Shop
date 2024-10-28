@@ -1,9 +1,9 @@
 from django import forms
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, Div, Submit, HTML
+from crispy_forms.layout import Layout, Field, HTML
 
-from .models import Order
+from .models import Order, Review
 from apps.base_account.models import UserAddress
 
 
@@ -42,3 +42,9 @@ class OrderForm(forms.ModelForm):
             """
             ),
         )
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ["title", "description", "rating"]

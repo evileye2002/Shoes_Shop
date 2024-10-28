@@ -215,9 +215,17 @@ def delete_address(request, id):
 
 # Core
 from django.http import HttpResponse, Http404
-from django.db.models import F, Prefetch
+from django.db.models import (
+    Avg,
+    Min,
+    Subquery,
+    F,
+    Count,
+    Prefetch,
+)
 
 from apps.core.enums import OrderStatus
+from apps.core.forms import ReviewForm
 from apps.core.models import (
     Shoe,
     Order,
@@ -226,7 +234,11 @@ from apps.core.models import (
     ShoeOptionSize,
     ShoeOptionImage,
 )
-from apps.core.utils import product_detail_handler, cart_item_total_price_handler
+from apps.core.utils import (
+    product_detail_handler,
+    cart_item_total_price_handler,
+    get_product_quantity_detail,
+)
 
 
 def product_selection_update(request, uuid):
@@ -260,6 +272,7 @@ def product_selection_update(request, uuid):
         shoe,
         selected_color_uuid,
         selected_size_uuid if not change_color else None,
+        request.user,
     )
 
     context = {
@@ -402,3 +415,49 @@ def order_action(request):
         "order": order,
     }
     return render(request, "htmx/order_action.html", context)
+
+
+def review_action(request):
+    action = request.GET.get("action")
+    shoe_uuid = request.GET.get("shoe-uuid")
+    quantity_detail = {}
+    is_update_review = False
+
+    if action == "get-form":
+        shoe = Shoe.objects.filter(uuid=shoe_uuid)
+        if not shoe.exists():
+            messages.error(request, "Sản phẩm không tồn tại.")
+            return HttpResponse(status=204)
+        quantity_detail = get_product_quantity_detail(shoe.first(), request.user)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        shoe_uuid = post_data.get("shoe-uuid")
+
+        shoe = Shoe.objects.filter(uuid=shoe_uuid)
+        if not shoe.exists():
+            messages.error(request, "Sản phẩm không tồn tại.")
+            return HttpResponse(status=204)
+
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            new_review = form.save(commit=False)
+            new_review.shoe = shoe.first()
+            new_review.user = request.user
+            new_review.save()
+
+            shoe = shoe.annotate(
+                total_reviews=Count("reviews", distinct=True),
+                avg_review=Avg("reviews__rating", distinct=True),
+            ).values("total_reviews", "avg_review")
+
+            is_update_review = True
+            messages.success(request, "Đánh giá sản phẩm thành công.")
+
+    context = {
+        "shoe": shoe.first(),
+        "is_update_review": is_update_review,
+        "review_range": range(0, 5),
+        **quantity_detail,
+    }
+    return render(request, "htmx/review_action.html", context)

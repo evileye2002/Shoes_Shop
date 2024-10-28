@@ -130,7 +130,8 @@ class ShoeOptionSize(models.Model):
 
 
 class Review(AbstractTimestamp):
-    comment = models.TextField("Bình luận")
+    title = models.CharField("Tiêu đề", max_length=100)
+    description = models.TextField("Bình luận", max_length=255)
     rating = models.IntegerField(
         "Đánh giá",
         choices=Rating.choices,
@@ -231,6 +232,7 @@ class LineItem(AbstractTimestamp):
     shoe_option_size = models.ForeignKey(
         ShoeOptionSize,
         on_delete=models.CASCADE,
+        related_name="items",
         verbose_name="Kích cỡ",
     )
     cart = models.ForeignKey(

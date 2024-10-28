@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
-from django.conf import settings
 from django.db.models import (
     Avg,
     Min,
@@ -53,7 +52,7 @@ def products(request):
             min_price=Min("options__sizes__price"),
             max_discount=Subquery(max_discount_subquery),
         )
-        .prefetch_related("tags", "options__images")
+        .prefetch_related("tags", "options__images", "reviews")
         .order_by("-created_at")
         .distinct()
     )
@@ -61,7 +60,6 @@ def products(request):
     context = {
         "shoes": shoes,
         "review_range": range(0, 5),
-        "media_url": settings.MEDIA_URL,
     }
     return render(request, "core/products.html", context)
 
@@ -85,6 +83,8 @@ def product(request, uuid):
                 to_attr="prefetched_sizes",
             ),
             "options__color",
+            "reviews",
+            "reviews__user",
         )
         .first()
     )
@@ -92,12 +92,13 @@ def product(request, uuid):
     if not shoe:
         return Http404()
 
-    product_detail = product_detail_handler(shoe)
+    product_detail = product_detail_handler(shoe, user=request.user)
 
     context = {
         "last_crum": shoe.name,
         "review_range": range(0, 5),
         "shoe": shoe,
+        "reviews": shoe.reviews.all(),
         **product_detail,
     }
     return render(request, "core/product.html", context)

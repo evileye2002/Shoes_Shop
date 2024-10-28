@@ -6,7 +6,6 @@ register = template.Library()
 NAVBAR_LINKS = [
     {"url": "/", "label": "Trang chủ"},
     {"url": "/products", "label": "Sản phẩm"},
-    {"url": "/blogs", "label": "Bài viết"},
     {"url": "/about_us", "label": "Về chúng tôi"},
     {"url": "/contact", "label": "Liên hệ"},
 ]

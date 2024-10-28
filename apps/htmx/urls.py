@@ -23,4 +23,5 @@ urlpatterns = [
         views.cart_item_action,
         name="htmx_cart_item_action",
     ),
+    path("review_action", views.review_action, name="htmx_review_action"),
 ]

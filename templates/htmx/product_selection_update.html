@@ -64,7 +64,7 @@
   data-increment-id="increment-button-{{ selected_size.uuid }}" 
   data-decrement-id="decrement-button-{{ selected_size.uuid }}">
 
-  <label for="quantity-input-{{ selected_size.uuid }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn số lượng:</label>
+  <label for="quantity-input-{{ selected_size.uuid }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Chọn số lượng</label>
   <div class="relative flex items-center max-w-[50%]">
     {# prettier-ignore #}
     <button 
@@ -113,8 +113,13 @@
   </script>
 </div>
 
-<div id="quantity-label" hx-swap-oob="true" class="text-sm font-medium text-gray-900 dark:text-white">
-  Còn <span class="font-bold">{{ selected_size.quantity|stringformat:'02d' }}</span> sản phẩm <span class="hidden sm:inline">trong kho</span>
+<div id="quantity-label" hx-swap-oob="true" class="flex justify-between text-sm font-medium text-gray-500 dark:text-white">
+  <p>
+    Còn <span class="font-bold text-gray-800">{{ selected_size.quantity|stringformat:'02d' }}</span> sản phẩm <span class="hidden lg:inline">trong kho</span>
+  </p>
+  <p>
+    Đã bán <span class="font-bold text-gray-800">{{ total_solds }}</span> sản phẩm
+  </p>
 </div>
 
 {% if change_color %}

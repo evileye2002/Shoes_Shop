@@ -22,10 +22,14 @@ class Command(BaseCommand):
         ]
         tags = [
             "Giày thể thao",
-            "Sneaker",
             "Giày chạy bộ",
             "Giày công sở",
-            "Giày đẹp",
+            "Giày chunky",
+            "Giày lười",
+            "Giày đế cao su",
+            "Giày nữ",
+            "Giày nam",
+            "Sneaker",
         ]
         sizes = ["36", "37", "38", "39", "40", "41", "42", "43", "44", "45"]
         colors = [

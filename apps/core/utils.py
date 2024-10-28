@@ -1,8 +1,10 @@
 from decimal import Decimal
-
+from datetime import timedelta
+from django.utils import timezone
 from django.core.paginator import Paginator
 
-from .models import LineItem
+from .models import LineItem, Order, Review
+from .enums import OrderStatus
 
 ITEM_PER_PAGE = 12
 
@@ -29,11 +31,39 @@ def get_paginator(request, queryset, item_per_page=ITEM_PER_PAGE):
     return p.get_page(page)
 
 
+def get_product_quantity_detail(shoe, user=None):
+    delivered_orders = Order.objects.filter(
+        items__shoe_option_size__shoe_option__shoe=shoe,
+        status=OrderStatus.DELIVERED,
+    )
+    total_solds = delivered_orders.count()
+    allow_user_review = False
+
+    if user:
+        time_threshold = timezone.now() - timedelta(hours=24)
+        user_orders = delivered_orders.filter(user=user, updated_at__gte=time_threshold)
+        user_reviews = Review.objects.filter(
+            user=user, shoe=shoe, created_at__gte=time_threshold
+        )
+
+        if user_orders.count() > 0 and user_reviews.count() == 0:
+            allow_user_review = True
+
+        # TODO: Check user is review in 24h or not
+
+    return {
+        "total_solds": total_solds,
+        "allow_user_review": allow_user_review,
+    }
+
+
 def product_detail_handler(
     shoe,
     selected_option_uuid=None,
     selected_option_size_uuid=None,
+    user=None,
 ):
+    quantity_detail = get_product_quantity_detail(shoe)
     options = list(shoe.options.all())
     all_sizes = list(
         {
@@ -90,6 +120,7 @@ def product_detail_handler(
         "selected_option": selected_option,
         "selected_size": selected_size,
         "selected_size_discount": selected_size_discount,
+        **quantity_detail,
     }
 
     return context
