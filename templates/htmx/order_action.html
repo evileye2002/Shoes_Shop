@@ -44,7 +44,7 @@
         <p class="text-sm font-bold text-gray-900">{{ order.total_payment|int_comma }}đ</p>
         </div>
     </div>
-    <div class="flex items-center justify-end gap-4 mt-4 {% if order.status == 'cannceled' or order.status == 'delivered' %}hidden{% endif %}">
+    <div class="flex items-center justify-end gap-4 mt-4 {% if order.status == 'cannceled' or order.status == 'delivered' or not user == order.user %}hidden{% endif %}">
         {% if user == order.user %}
             {% if order.status == 'shipped' %}
             <c-button data-tooltip-target="tooltip-cancel-order" :isdisabled="True" overideclass="!px-2" style="error" type="submit" name="action" value="cancel-order">Hủy đơn</c-button>

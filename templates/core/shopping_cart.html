@@ -21,13 +21,7 @@
             <ul id="selected-item-uuids" class="hidden"></ul>
             <div class="space-y-6">
               {% for data in items_data %}
-                {# prettier-ignore #}
-                <c-lineitem-card 
-                  :item="data" 
-                  :option="data.shoe_option_size.shoe_option" 
-                  :shoe="data.shoe_option_size.shoe_option.shoe" 
-                  :itemimage="data.shoe_option_size.shoe_option.images.all.0">
-                </c-lineitem-card>
+                <c-lineitem-card :item="data"></c-lineitem-card>
               {% endfor %}
             </div>
           </div>

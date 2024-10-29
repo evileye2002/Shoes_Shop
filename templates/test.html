@@ -1,5 +1,16 @@
 {% extends 'core/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-  <div class="p-4">Home Page</div>
+  <div class="p-4">
+    <form action="" method="get">
+      {{ filter.form }}
+      <button type="submit">Submit</button>
+    </form>
+    <ul>
+      {% for shoe in filter.qs %}
+        <li>{{ shoe }}</li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}

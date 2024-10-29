@@ -85,3 +85,8 @@ function enableButton(id) {
     $btn.disabled = false;
   }
 }
+
+function updateRangeNumberInput(e, ortherID) {
+  const orther = document.getElementById(ortherID);
+  orther.value = e.target.value;
+}

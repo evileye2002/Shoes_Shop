@@ -1,17 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
-from django.db.models import (
-    Avg,
-    Min,
-    Max,
-    Subquery,
-    F,
-    ExpressionWrapper,
-    IntegerField,
-    Count,
-    OuterRef,
-    Prefetch,
-)
+from django.db.models import Avg, Count, Prefetch
+from apps.vnpay.utils import create_payment, payment_return_handler
+from apps.attribute.models import Color, Size
 
 from .models import (
     Shoe,
@@ -22,44 +13,49 @@ from .models import (
     Payment,
     Order,
 )
-from .utils import product_detail_handler, cart_item_total_price_handler
+from .utils import (
+    product_detail_handler,
+    cart_item_total_price_handler,
+    get_shoes_queryset,
+    get_brands_group_by_alphabet,
+    get_lineitem_queryset,
+    get_product_quantity_detail,
+)
 from .forms import OrderForm
 from .enums import PaymentMethods, OrderStatus
-from apps.vnpay.utils import create_payment, payment_return_handler
+from .filters import ShoeFilter
 
 
 # Create your views here.
+def test(request):
+    shoes = get_shoes_queryset(request)
+    filter = ShoeFilter(request.GET, shoes)
+
+    brands_group_by_alphabet = get_brands_group_by_alphabet()
+
+    context = {
+        "filter": filter,
+    }
+    return render(request, "test.html", context)
+
+
 def home(request):
     return render(request, "core/home.html")
 
 
 def products(request):
-    max_discount_subquery = (
-        ShoeOptionSize.objects.filter(shoe_option__shoe=OuterRef("pk"))
-        .annotate(
-            discount=ExpressionWrapper(
-                (F("old_price") - F("price")) / F("old_price") * 100,
-                output_field=IntegerField(),
-            )
-        )
-        .values("discount")
-        .order_by("-discount")[:1]
-    )
-    shoes = (
-        Shoe.objects.annotate(
-            total_reviews=Count("reviews", distinct=True),
-            avg_review=Avg("reviews__rating", distinct=True),
-            min_price=Min("options__sizes__price"),
-            max_discount=Subquery(max_discount_subquery),
-        )
-        .prefetch_related("tags", "options__images", "reviews")
-        .order_by("-created_at")
-        .distinct()
-    )
+    shoes_queryset = get_shoes_queryset(request)
+    brands_group_by_alphabet = get_brands_group_by_alphabet()
+    colors = Color.objects.all()
+    sizes = Size.objects.all()
+    filter = ShoeFilter(request.GET, shoes_queryset)
 
     context = {
-        "shoes": shoes,
         "review_range": range(0, 5),
+        "shoes": filter.qs,
+        "colors": colors,
+        "sizes": sizes,
+        **brands_group_by_alphabet,
     }
     return render(request, "core/products.html", context)
 
@@ -92,7 +88,10 @@ def product(request, uuid):
     if not shoe:
         return Http404()
 
-    product_detail = product_detail_handler(shoe, user=request.user)
+    quantity_detail = get_product_quantity_detail(shoe)
+    product_detail = product_detail_handler(shoe)
+    if not product_detail:
+        return HttpResponse(status=404)
 
     context = {
         "last_crum": shoe.name,
@@ -100,23 +99,14 @@ def product(request, uuid):
         "shoe": shoe,
         "reviews": shoe.reviews.all(),
         **product_detail,
+        **quantity_detail,
     }
     return render(request, "core/product.html", context)
 
 
 def shopping_cart(request):
     cart, _ = ShoppingCart.objects.get_or_create(user=request.user)
-    items_data = list(
-        (
-            LineItem.objects.filter(cart=cart)
-            .prefetch_related("shoe_option_size__shoe_option__images")
-            .select_related(
-                "shoe_option_size__shoe_option__shoe",
-                "shoe_option_size__size",
-                "shoe_option_size__shoe_option__color",
-            )
-        )
-    )
+    items_data = get_lineitem_queryset(cart, select_related=True)
 
     context = {
         "items_data": items_data,
@@ -130,11 +120,8 @@ def ordering(request):
 
     shipping_fee = 15000
     form = OrderForm(user=request.user)
-    cart_items_data = cart_item_total_price_handler(
-        cart,
-        selected_item_uuids,
-        True,
-    )
+    selected_items = get_lineitem_queryset(cart, selected_item_uuids, True)
+    cart_items_data = cart_item_total_price_handler(selected_items)
 
     if len(cart_items_data["selected_items"]) == 0:
         return HttpResponse(status=404)
@@ -155,7 +142,6 @@ def ordering(request):
                 order.total_payment = total_order_price
                 order.save()
                 for item in cart_items_data["selected_items"]:
-                    item.cart = None
                     item.order = order
                     item.save()
 
@@ -168,9 +154,8 @@ def ordering(request):
                         order.uuid,
                         order.total_payment,
                     )
-                elif payment_method == PaymentMethods.CASH_ON_DELIVERY:
-                    order.status = OrderStatus.PREPARING
-                    order.save()
+                    # print("redirect_url", redirect_url)
+
                 return redirect(redirect_url)
 
     context = {
@@ -199,6 +184,19 @@ def payment_return(request):
         uuid=order_id,
         user=request.user,
     )
+
+    success_code = ["-1", "00"]
+
+    if not order.status == OrderStatus.PENDING or not res_code in success_code:
+        return render(request, "core/payment_return.html", response_data)
+
+    for item in order.items.all():
+        item.cart = None
+        item.save()
+
+    if order.payment_method == PaymentMethods.CASH_ON_DELIVERY:
+        order.status = OrderStatus.PREPARING
+        order.save()
 
     if res_code == "00":
         response_data = {**payment_return_handler(request), **response_data}

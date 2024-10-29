@@ -28,7 +28,7 @@ class Brand(AbstractTimestamp):
     description = models.TextField("Mô tả", max_length=255, null=True, blank=True)
 
     class Meta:
-        ordering = ["-created_at"]
+        ordering = ["name"]
         verbose_name_plural = "Thương hiệu"
         verbose_name = "Thương hiệu"
 
@@ -50,7 +50,9 @@ class Tag(AbstractTimestamp):
 
 
 class Color(AbstractTimestamp):
-    name = models.CharField(max_length=50, verbose_name="Tên màu")
+    name = models.CharField("Tên màu", max_length=50)
+    hex_color_1 = models.CharField("Mã màu 1", max_length=7, default="#000000")
+    hex_color_2 = models.CharField("Mã màu 2", max_length=7, null=True, blank=True)
 
     class Meta:
         ordering = ["-created_at"]

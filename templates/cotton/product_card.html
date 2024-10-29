@@ -4,7 +4,8 @@
   <div class="w-full h-56">
     {# prettier-ignore #}
     <a href="{% url 'product' shoe.uuid %}" class="flex items-center justify-center h-full">
-      <img class="max-h-full " src="{{ shoe.options.all.0.images.all.0.image.url }}" alt="{{ shoe.name }}" />
+      {% comment %} <img class="max-h-full " src="{{ shoe.options.all.0.images.all.0.image.url }}" alt="{{ shoe.name }}" /> {% endcomment %}
+      <img class="max-h-full " src="{{ MEDIA_URL }}{{ shoe.first_image_path }}" alt="{{ shoe.name }}" />
     </a>
   </div>
   <div class="pt-6">
@@ -47,7 +48,7 @@
 
     <div class="flex items-center justify-between gap-4 mt-4">
       <div class="">
-        <p class="text-2xl font-extrabold leading-tight text-primary-500 dark:text-white">{{ shoe.min_price|int_comma }}đ</p>
+        <p class="text-2xl font-extrabold leading-tight text-primary-500 dark:text-white">{{ shoe.min_price|default:0|int_comma }}đ</p>
       </div>
     </div>
   </div>

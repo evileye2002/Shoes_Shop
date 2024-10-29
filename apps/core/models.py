@@ -33,7 +33,6 @@ class Shoe(AbstractTimestamp):
         related_name="shoes",
         verbose_name="Thương hiệu",
     )
-
     uuid = ShortUUIDField(unique=True, length=10, max_length=20, prefix="SHOE")
     name = models.CharField(max_length=200, verbose_name="Tên giày")
     tags = models.ManyToManyField(
@@ -130,7 +129,7 @@ class ShoeOptionSize(models.Model):
 
 
 class Review(AbstractTimestamp):
-    title = models.CharField("Tiêu đề", max_length=100)
+    title = models.CharField("Tiêu đề", max_length=50)
     description = models.TextField("Bình luận", max_length=255)
     rating = models.IntegerField(
         "Đánh giá",

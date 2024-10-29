@@ -2,8 +2,20 @@ from decimal import Decimal
 from datetime import timedelta
 from django.utils import timezone
 from django.core.paginator import Paginator
-
-from .models import LineItem, Order, Review
+from django.db.models import (
+    F,
+    Min,
+    Sum,
+    Avg,
+    Count,
+    OuterRef,
+    Subquery,
+    IntegerField,
+    ExpressionWrapper,
+)
+from apps.attribute.models import Brand
+from .models import Shoe, ShoeOptionSize
+from .models import LineItem, Order, Review, ShoeOptionImage
 from .enums import OrderStatus
 
 ITEM_PER_PAGE = 12
@@ -36,7 +48,10 @@ def get_product_quantity_detail(shoe, user=None):
         items__shoe_option_size__shoe_option__shoe=shoe,
         status=OrderStatus.DELIVERED,
     )
-    total_solds = delivered_orders.count()
+    total_solds = (
+        delivered_orders.aggregate(total_solds=Sum("items__quantity"))["total_solds"]
+        or 0
+    )
     allow_user_review = False
 
     if user:
@@ -61,9 +76,7 @@ def product_detail_handler(
     shoe,
     selected_option_uuid=None,
     selected_option_size_uuid=None,
-    user=None,
 ):
-    quantity_detail = get_product_quantity_detail(shoe)
     options = list(shoe.options.all())
     all_sizes = list(
         {
@@ -73,11 +86,15 @@ def product_detail_handler(
 
     selected_option = (
         options[0]
-        if selected_option_uuid is None
+        if selected_option_uuid is None and options
         else next(
             (option for option in options if option.uuid == selected_option_uuid), None
         )
     )
+
+    if selected_option is None:
+        return {}
+
     selected_option_images = selected_option.prefetched_images
     selected_option_sizes = sorted(
         {size for size in selected_option.prefetched_sizes if size.quantity > 0},
@@ -120,40 +137,98 @@ def product_detail_handler(
         "selected_option": selected_option,
         "selected_size": selected_size,
         "selected_size_discount": selected_size_discount,
-        **quantity_detail,
     }
 
     return context
 
 
-def cart_item_total_price_handler(cart, selected_item_uuids=[], prefetch_related=False):
-    items = LineItem.objects.filter(
-        cart=cart,
-        uuid__in=selected_item_uuids,
-    )
-    selected_items = (
-        list(items)
-        if not prefetch_related
-        else list(
-            items.prefetch_related(
-                "shoe_option_size__shoe_option__images"
-            ).select_related(
-                "shoe_option_size__shoe_option__shoe",
-                "shoe_option_size__size",
-                "shoe_option_size__shoe_option__color",
-            )
-        )
-    )
-
+def cart_item_total_price_handler(selected_items):
     total_item_price = sum(data.get_total_price() for data in selected_items)
     tax = total_item_price * Decimal("0.1")
     total_price = total_item_price + tax
     saving = sum(data.get_total_old_price() for data in selected_items) - total_price
 
     return {
-        "selected_items": selected_items,
+        "selected_items": list(selected_items),
         "total_item_price": total_item_price,
         "tax": tax,
         "total_price": total_price,
         "saving": saving if saving > 0 else 0,
     }
+
+
+def get_shoes_queryset(request):
+    order_by = request.GET.get("o", "-created_at")
+    # TODO: Check order
+
+    max_discount_subquery = (
+        ShoeOptionSize.objects.filter(shoe_option__shoe=OuterRef("pk"))
+        .annotate(
+            discount=ExpressionWrapper(
+                (F("old_price") - F("price")) / F("old_price") * 100,
+                output_field=IntegerField(),
+            )
+        )
+        .values("discount")
+        .order_by("-discount")[:1]
+    )
+
+    first_image_subquery = ShoeOptionImage.objects.filter(
+        shoe_option__shoe=OuterRef("pk")
+    ).values("image")[:1]
+
+    shoes = (
+        Shoe.objects.annotate(
+            total_reviews=Count("reviews", distinct=True),
+            avg_review=Avg("reviews__rating", distinct=True),
+            min_price=Min("options__sizes__price"),
+            max_discount=Subquery(max_discount_subquery),
+            first_image_path=Subquery(first_image_subquery),
+        )
+        .prefetch_related(
+            "tags",
+            # "options__images",
+        )
+        .order_by(order_by)
+        .distinct()
+    )
+
+    return shoes
+
+
+def get_brands_group_by_alphabet():
+    brands = Brand.objects.prefetch_related("shoes").order_by("name")
+    brands_alphabet = {}
+
+    for brand in brands:
+        first_char = brand.name[0]
+        if first_char not in brands_alphabet:
+            brands_alphabet[first_char] = []
+
+        brands_alphabet[first_char].append(brand)
+
+    return {"brands_alphabet": brands_alphabet}
+
+
+def get_lineitem_queryset(cart, selected_item_uuids=[], select_related=False):
+    queryset = (
+        LineItem.objects.filter(cart=cart, uuid__in=selected_item_uuids)
+        if len(selected_item_uuids) > 0
+        else LineItem.objects.filter(cart=cart)
+    )
+
+    if select_related:
+        first_image_subquery = ShoeOptionImage.objects.filter(
+            shoe_option=OuterRef("shoe_option_size__shoe_option__pk")
+        ).values("image")[:1]
+
+        queryset = queryset.annotate(
+            shoe_uuid=F("shoe_option_size__shoe_option__shoe__uuid"),
+            shoe_name=F("shoe_option_size__shoe_option__shoe__name"),
+            option_size=F("shoe_option_size__size__name"),
+            option_color=F("shoe_option_size__shoe_option__color__name"),
+            option_quantity=F("shoe_option_size__quantity"),
+            first_image_path=Subquery(first_image_subquery),
+        ).select_related("shoe_option_size")
+
+    return queryset
