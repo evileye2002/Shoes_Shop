@@ -190,6 +190,9 @@ def payment_return(request):
 
     success_code = ["-1", "00"]
 
+    if order.status == OrderStatus.CANNCELED:
+        return HttpResponse(status=404)
+
     if not order.status == OrderStatus.PENDING or not res_code in success_code:
         return render(request, "core/payment_return.html", response_data)
 
