@@ -222,6 +222,7 @@ from django.db.models import (
     Prefetch,
 )
 
+from apps.core.filters import ShoeFilter
 from apps.core.enums import OrderStatus
 from apps.core.forms import ReviewForm
 from apps.core.models import (
@@ -237,6 +238,8 @@ from apps.core.utils import (
     cart_item_total_price_handler,
     get_product_quantity_detail,
     get_lineitem_queryset,
+    get_shoes_queryset,
+    get_paginator,
 )
 
 
@@ -366,7 +369,7 @@ def cart_item_action(request, uuid):
             messages.success(request, "Xóa sản phảm thành công.")
 
     selected_items = get_lineitem_queryset(cart, selected_item_uuids)
-    cart_items_data = cart_item_total_price_handler(selected_items)
+    cart_items_data = cart_item_total_price_handler(list(selected_items))
 
     context = {
         "item": item,
@@ -455,7 +458,32 @@ def review_action(request):
     context = {
         "shoe": shoe.first(),
         "is_update_review": is_update_review,
-        "review_range": range(0, 5),
+        "review_range": range(1, 6),
         **quantity_detail,
     }
     return render(request, "htmx/review_action.html", context)
+
+
+def products_list(request):
+    shoes_queryset = get_shoes_queryset(request)
+    filter = ShoeFilter(request.GET, shoes_queryset)
+    paginator = get_paginator(request, filter.qs)
+
+    context = {
+        "review_range": range(1, 6),
+        "shoes": paginator,
+    }
+    return render(request, "htmx/products_list.html", context)
+
+
+def product_reviews_list(request, uuid):
+    shoe = get_object_or_404(Shoe, uuid=uuid)
+    filter = ShoeFilter(request.GET, shoe.reviews.all())
+    paginator = get_paginator(request, filter.qs, 5)
+
+    context = {
+        "review_range": range(1, 6),
+        "reviews": paginator,
+        "shoe_uuid": shoe.uuid,
+    }
+    return render(request, "htmx/product_reviews_list.html", context)

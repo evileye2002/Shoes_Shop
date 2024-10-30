@@ -1,0 +1,27 @@
+{% if reviews|length == 0 %}
+  <div class="flex justify-center py-6 mt-4 border border-gray-200 rounded-lg">
+    <span class="text-lg font-medium text-gray-800">Sản phẩm chưa có đánh giá.</span>
+  </div>
+{% else %}
+  <div id="products-review-list" class="divide-y divide-gray-200 dark:divide-gray-700">
+    {% for review in reviews %}
+      <c-product-review-card :review />
+    {% endfor %}
+  </div>
+
+  {% if reviews.has_next %}
+    <div id="show-more-reviews" class="text-center" hx-swap-oob="true">
+      {# prettier-ignore #}
+      <c-button 
+        hx-get="{% url 'htmx_product_reviews_list' shoe_uuid %}{% querystring page=reviews.next_page_number %}" 
+        hx-trigger="click" 
+        hx-target="#products-review-list" 
+        hx-swap="beforeend"
+        style="secondary">
+        Xem thêm đánh giá
+    </c-button>
+    </div>
+  {% else %}
+    <div id="show-more-reviews" class="hidden text-center" hx-swap-oob="true"></div>
+  {% endif %}
+{% endif %}

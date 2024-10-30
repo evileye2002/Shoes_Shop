@@ -125,9 +125,10 @@
               var decrementID = $parent.getAttribute('data-decrement-id')
               var maxValue = $parent.getAttribute('data-input-counter-max')
               var options = {
-                minValue: 1,
+                minValue: '1',
                 maxValue
               }
+              console.log(options)
               initCartItemInputCounter(inputID, incrementID, decrementID, options)
             })()
           </script>

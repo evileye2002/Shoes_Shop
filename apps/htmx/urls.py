@@ -24,4 +24,10 @@ urlpatterns = [
         name="htmx_cart_item_action",
     ),
     path("review_action", views.review_action, name="htmx_review_action"),
+    path("products_list", views.products_list, name="htmx_products_list"),
+    path(
+        "product_reviews_list/<str:uuid>",
+        views.product_reviews_list,
+        name="htmx_product_reviews_list",
+    ),
 ]

@@ -25,32 +25,33 @@
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 9-7 7-7-7" />
             </svg>
           </button>
-          <div id="dropdownSort1" class="z-50 hidden w-40 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700" data-popper-placement="bottom">
+          <div id="dropdownSort1" class="z-50 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-fit dark:bg-gray-700" data-popper-placement="bottom">
             <ul class="p-2 text-sm font-medium text-left text-gray-500 dark:text-gray-400" aria-labelledby="sortDropdownButton">
               <li>
-                <a href="#" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Mới nhất</a>
+                <a href="{% querystring o='newest' %}" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Mới nhất</a>
               </li>
               <li>
-                <a href="#" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Giá thấp đến cao</a>
+                <a href="{% querystring o='increasep' %}" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Giá thấp đến cao</a>
               </li>
               <li>
-                <a href="#" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Giá cao đến thấp</a>
+                <a href="{% querystring o='decreasep' %}" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Giá cao đến thấp</a>
               </li>
               <li>
-                <a href="#" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Số lượng đánh giá</a>
+                <a href="{% querystring o='treviews' %}" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Số lượng đánh giá</a>
               </li>
               <li>
-                <a href="#" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Giảm giá %</a>
+                <a href="{% querystring o='areviews' %}" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Đánh giá trung bình</a>
+              </li>
+              <li>
+                <a href="{% querystring o='discounts' %}" class="inline-flex items-center w-full px-3 py-2 text-sm text-gray-500 rounded-md group hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-600 dark:hover:text-white">Giảm giá %</a>
               </li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {% for shoe in shoes %}
-          <c-product-card :shoe="shoe" />
-        {% endfor %}
+      <div id="products-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+        {% include 'htmx/products_list.html' %}
       </div>
     </div>
   </section>
@@ -146,7 +147,7 @@
             </div>
 
             <div>
-              <h6 class="mb-2 text-sm font-medium text-black dark:text-white">Rating</h6>
+              <h6 class="mb-2 text-sm font-medium text-black dark:text-white">Đánh giá</h6>
               <div class="space-y-2">
                 <div class="flex items-center">
                   <input id="five-stars" type="radio" value="5" name="rating" class="w-4 h-4 bg-gray-100 border-gray-300 text-primary-600 focus:ring-2 focus:ring-primary-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-primary-600" />

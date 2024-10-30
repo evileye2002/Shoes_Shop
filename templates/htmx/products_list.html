@@ -1,0 +1,7 @@
+{% for shoe in shoes %}
+  {% if forloop.last and shoes.has_next %}
+    <c-product-card :shoe="shoe" hx-get="{% url 'htmx_products_list' %}{% querystring page=shoes.next_page_number %}" hx-trigger="revealed" hx-swap="afterend" />
+  {% else %}
+    <c-product-card :shoe="shoe" />
+  {% endif %}
+{% endfor %}

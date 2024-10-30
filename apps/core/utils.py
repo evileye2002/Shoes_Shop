@@ -8,17 +8,20 @@ from django.db.models import (
     Sum,
     Avg,
     Count,
+    Value,
     OuterRef,
     Subquery,
     IntegerField,
     ExpressionWrapper,
 )
+from django.db.models.functions import Coalesce
 from apps.attribute.models import Brand
 from .models import Shoe, ShoeOptionSize
 from .models import LineItem, Order, Review, ShoeOptionImage
-from .enums import OrderStatus
+from .enums import OrderStatus, PRODUCT_ORDER_CHOICES
 
 ITEM_PER_PAGE = 12
+PAGE_QUERYSTRING = "page"
 
 
 def format_number_with_commas(value):
@@ -39,7 +42,7 @@ def get_paginator(request, queryset, item_per_page=ITEM_PER_PAGE):
         return queryset
 
     p = Paginator(queryset, item_per_page)
-    page = request.GET.get("page")
+    page = request.GET.get(PAGE_QUERYSTRING)
     return p.get_page(page)
 
 
@@ -149,7 +152,7 @@ def cart_item_total_price_handler(selected_items):
     saving = sum(data.get_total_old_price() for data in selected_items) - total_price
 
     return {
-        "selected_items": list(selected_items),
+        "selected_items": selected_items,
         "total_item_price": total_item_price,
         "tax": tax,
         "total_price": total_price,
@@ -158,8 +161,8 @@ def cart_item_total_price_handler(selected_items):
 
 
 def get_shoes_queryset(request):
-    order_by = request.GET.get("o", "-created_at")
-    # TODO: Check order
+    ordering = request.GET.get("o")
+    order_by = PRODUCT_ORDER_CHOICES.get(ordering, "-avg_review")
 
     max_discount_subquery = (
         ShoeOptionSize.objects.filter(shoe_option__shoe=OuterRef("pk"))
@@ -180,9 +183,9 @@ def get_shoes_queryset(request):
     shoes = (
         Shoe.objects.annotate(
             total_reviews=Count("reviews", distinct=True),
-            avg_review=Avg("reviews__rating", distinct=True),
+            avg_review=Coalesce(Avg("reviews__rating"), Value(0.0)),
             min_price=Min("options__sizes__price"),
-            max_discount=Subquery(max_discount_subquery),
+            max_discount=Coalesce(Subquery(max_discount_subquery), Value(0)),
             first_image_path=Subquery(first_image_subquery),
         )
         .prefetch_related(
@@ -190,7 +193,7 @@ def get_shoes_queryset(request):
             # "options__images",
         )
         .order_by(order_by)
-        .distinct()
+        # .distinct()
     )
 
     return shoes
@@ -210,12 +213,11 @@ def get_brands_group_by_alphabet():
     return {"brands_alphabet": brands_alphabet}
 
 
-def get_lineitem_queryset(cart, selected_item_uuids=[], select_related=False):
-    queryset = (
-        LineItem.objects.filter(cart=cart, uuid__in=selected_item_uuids)
-        if len(selected_item_uuids) > 0
-        else LineItem.objects.filter(cart=cart)
-    )
+def get_lineitem_queryset(cart, selected_item_uuids=None, select_related=False):
+    if selected_item_uuids is not None:
+        queryset = LineItem.objects.filter(cart=cart, uuid__in=selected_item_uuids)
+    else:
+        queryset = LineItem.objects.filter(cart=cart)
 
     if select_related:
         first_image_subquery = ShoeOptionImage.objects.filter(

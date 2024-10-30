@@ -20,6 +20,7 @@ from .utils import (
     get_brands_group_by_alphabet,
     get_lineitem_queryset,
     get_product_quantity_detail,
+    get_paginator,
 )
 from .forms import OrderForm
 from .enums import PaymentMethods, OrderStatus
@@ -49,10 +50,11 @@ def products(request):
     colors = Color.objects.all()
     sizes = Size.objects.all()
     filter = ShoeFilter(request.GET, shoes_queryset)
+    paginator = get_paginator(request, filter.qs)
 
     context = {
-        "review_range": range(0, 5),
-        "shoes": filter.qs,
+        "review_range": range(1, 6),
+        "shoes": paginator,
         "colors": colors,
         "sizes": sizes,
         **brands_group_by_alphabet,
@@ -79,7 +81,6 @@ def product(request, uuid):
                 to_attr="prefetched_sizes",
             ),
             "options__color",
-            "reviews",
             "reviews__user",
         )
         .first()
@@ -90,14 +91,16 @@ def product(request, uuid):
 
     quantity_detail = get_product_quantity_detail(shoe)
     product_detail = product_detail_handler(shoe)
+    reviews_paginator = get_paginator(request, shoe.reviews.all(), 5)
+
     if not product_detail:
         return HttpResponse(status=404)
 
     context = {
         "last_crum": shoe.name,
-        "review_range": range(0, 5),
+        "review_range": range(1, 6),
         "shoe": shoe,
-        "reviews": shoe.reviews.all(),
+        "reviews": reviews_paginator,
         **product_detail,
         **quantity_detail,
     }

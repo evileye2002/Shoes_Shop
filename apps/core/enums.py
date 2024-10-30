@@ -20,3 +20,13 @@ class Rating(models.IntegerChoices):
     THREE = 3, "3 sao"
     FOUR = 4, "4 sao"
     FIVE = 5, "5 sao"
+
+
+PRODUCT_ORDER_CHOICES = {
+    "newest": "-created_at",
+    "increasep": "min_price",
+    "decreasep": "-min_price",
+    "treviews": "-total_reviews",
+    "areviews": "-avg_review",
+    "discounts": "-max_discount",
+}

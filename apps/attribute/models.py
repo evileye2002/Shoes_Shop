@@ -55,7 +55,7 @@ class Color(AbstractTimestamp):
     hex_color_2 = models.CharField("Mã màu 2", max_length=7, null=True, blank=True)
 
     class Meta:
-        ordering = ["-created_at"]
+        # ordering = ["-created_at"]
         verbose_name_plural = "Màu sắc"
         verbose_name = "Màu sắc"
 
