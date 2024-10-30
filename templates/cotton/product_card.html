@@ -5,7 +5,7 @@
     {# prettier-ignore #}
     <a href="{% url 'product' shoe.uuid %}" class="flex items-center justify-center h-full">
       {% comment %} <img class="max-h-full " src="{{ shoe.options.all.0.images.all.0.image.url }}" alt="{{ shoe.name }}" /> {% endcomment %}
-      <img class="max-h-full " src="{{ MEDIA_URL }}{{ shoe.first_image_path }}" alt="{{ shoe.name }}" />
+      <img class="max-h-full " src="{{ media_url }}{{ shoe.first_image_path }}" alt="{{ shoe.name }}" />
     </a>
   </div>
   <div class="pt-6">

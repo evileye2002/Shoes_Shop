@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 BREADCRUMB_NAME_MAP = {
     "detail": {
         "label": "Thông tin chi tiết",
@@ -50,3 +53,12 @@ def breadcrumbs(request):
         )
 
     return {"breadcrumbs": breadcrumb_list}
+
+
+def media_url(request):
+    if not settings.DEBUG:
+        url = f"https://res.cloudinary.com/{settings.CLOUDINARY_CLOUD_NAME}/image/upload/v1/"
+    else:
+        url = settings.MEDIA_URL
+
+    return {"media_url": url}

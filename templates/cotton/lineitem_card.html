@@ -25,7 +25,7 @@
     <label {% if not orderitem %}for="cart-item-{{ item.uuid }}"{% endif %} class="space-y-4 md:flex md:items-center md:justify-between md:gap-6 md:space-y-0">
       <a href="#" class="shrink-0 md:order-1">
         <div class="flex items-center size-20">
-          <img src="{{ MEDIA_URL }}{{ item.first_image_path }}" alt="..." />
+          <img src="{{ media_url }}{{ item.first_image_path }}" alt="..." />
         </div>
       </a>
 

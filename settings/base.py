@@ -67,6 +67,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "django.template.context_processors.media",
                 "apps.core.context_processors.breadcrumbs",
+                "apps.core.context_processors.media_url",
             ],
         },
     },

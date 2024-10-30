@@ -5,7 +5,7 @@ from .base import *
 
 SECRET_KEY = env("SECRET_KEY", default=SECRET_KEY)
 DEBUG = False
-ALLOWED_HOSTS = [".vercel.app", ".now.sh"]
+ALLOWED_HOSTS = [".vercel.app", ".now.sh", "localhost"]
 
 INSTALLED_APPS += [
     "cloudinary_storage",
