@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="{{ config_settings.description }}" />
 
-    <link rel="shortcut icon" href="{{ config_settings.shortcute_icon }}" />
+    {% comment %} <link rel="shortcut icon" href="{{ config_settings.shortcute_icon }}" /> {% endcomment %}
 
     {% if title %}
       <title>{{ title }} | {{ config_settings.web_name }}</title>
@@ -41,9 +41,10 @@
 
     {% include 'partials/messages.html' %}
 
-    <c-modal id="order-search" header="Tra cứu đơn hàng">
-      {# prettier-ignore #}
-      <form 
+    {% if user.is_authenticated %}
+      <c-modal id="order-search" header="Tra cứu đơn hàng">
+        {# prettier-ignore #}
+        <form 
         hx-get="{% url 'htmx_order_action' %}"
         hx-trigger="submit"
         hx-target="#order-search-result"
@@ -72,12 +73,11 @@
         </div>
       </form>
 
-      <div class="mt-4">
-        <p class="text-sm font-medium text-gray-900">Kết quả tra cứu</p>
-        <div id="order-search-result" class="space-y-4"></div>
-      </div>
-    </c-modal>
-
-    <!-- JS -->
+        <div class="mt-4">
+          <p class="text-sm font-medium text-gray-900">Kết quả tra cứu</p>
+          <div id="order-search-result" class="space-y-4"></div>
+        </div>
+      </c-modal>
+    {% endif %}
   </body>
 </html>

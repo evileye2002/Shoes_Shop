@@ -133,7 +133,7 @@ CRISPY_TEMPLATE_PACK = "tailwind"
 # Django-jazzmin
 JAZZMIN_SETTINGS = {
     # "show_ui_builder": True,
-    "site_logo": "imgs/logo.svg",
+    # "site_logo": "imgs/logo.svg",
     "site_brand": "Xuân Minh Shoes",
     "user_avatar": "avatar",
     "related_modal_active": True,
