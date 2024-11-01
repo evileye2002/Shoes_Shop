@@ -1,0 +1,41 @@
+{% extends 'core/base.html' %}
+{% load breadcrumb_tags %}
+
+{% block content %}
+  <section id="about-us" class="py-8 antialiased bg-white dark:bg-gray-900 md:py-12">
+    <div class="max-w-screen-xl px-4 mx-auto 2xl:px-0">
+      <div class="items-end justify-between mb-4 space-y-4 sm:flex sm:space-y-0 md:mb-8">
+        <div>
+          {% show_breadcrumbs breadcrumbs last_crum %}
+        </div>
+      </div>
+      <div class="text-center">
+        <h2 class="mb-6 text-4xl font-bold text-gray-800">Giới Thiệu Về Xuân Minh Shoes</h2>
+        <p class="mb-12 text-lg text-gray-600">
+          Chào mừng bạn đến với <strong>Xuân Minh Shoes</strong> – nơi phong cách và sự thoải mái hòa quyện trong từng bước chân. Chúng tôi cam kết mang đến cho khách hàng những đôi giày chất lượng, phù hợp với xu hướng thời trang mới nhất và đáp ứng nhu cầu phong cách đa dạng.
+        </p>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="mb-4 text-2xl font-semibold text-gray-800">Sứ Mệnh Của Chúng Tôi</h3>
+        <p class="text-gray-600">Xuân Minh Shoes mong muốn không chỉ mang đến những sản phẩm đẹp mắt, mà còn đảm bảo sự thoải mái và độ bền trong từng đôi giày. Chúng tôi tin rằng đôi giày tốt sẽ giúp bạn tự tin hơn trên mọi hành trình, từ công việc đến cuộc sống hằng ngày.</p>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="mb-4 text-2xl font-semibold text-gray-800">Tầm Nhìn Của Chúng Tôi</h3>
+        <p class="text-gray-600">Chúng tôi tin rằng mỗi người đều có thể tìm thấy phong cách riêng của mình qua các sản phẩm của Xuân Minh Shoes. Định hướng của chúng tôi là trở thành lựa chọn hàng đầu của khách hàng, nơi mà bạn có thể dễ dàng tìm thấy những đôi giày phù hợp với mọi lứa tuổi và sở thích.</p>
+      </div>
+
+      <div>
+        <h3 class="mb-4 text-2xl font-semibold text-gray-800">Giá Trị Cốt Lõi</h3>
+        <p class="text-gray-600">Chúng tôi tự hào về chất lượng vượt trội của sản phẩm, khách hàng luôn là trung tâm trong mọi hoạt động, và cam kết mang lại sự thoải mái cùng phong cách thời trang.</p>
+        <ul class="ml-5 text-gray-600 list-disc list-inside">
+          <li>Chất lượng vượt trội</li>
+          <li>Khách hàng là trung tâm</li>
+          <li>Thời trang và tiện lợi</li>
+          <li>Bền vững và trách nhiệm</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+{% endblock %}

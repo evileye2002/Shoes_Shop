@@ -29,19 +29,15 @@ from .filters import ShoeFilter
 
 # Create your views here.
 def test(request):
-    shoes = get_shoes_queryset(request)
-    filter = ShoeFilter(request.GET, shoes)
-
-    brands_group_by_alphabet = get_brands_group_by_alphabet()
-
-    context = {
-        "filter": filter,
-    }
-    return render(request, "test.html", context)
+    return render(request, "test.html")
 
 
 def home(request):
     return render(request, "core/home.html")
+
+
+def about_us(request):
+    return render(request, "core/about_us.html")
 
 
 def products(request):

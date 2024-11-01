@@ -1,5 +1,5 @@
 {% for link in nav_links %}
-  {% if request.path == link.url %}
+  {% if request.get_full_path == link.url %}
     <li>
       <a href="{{ link.url }}" class="block py-2 pl-3 pr-4 text-white rounded bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white" aria-current="page">{{ link.label }}</a>
     </li>

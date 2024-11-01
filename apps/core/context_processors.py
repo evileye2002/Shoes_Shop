@@ -22,6 +22,10 @@ BREADCRUMB_NAME_MAP = {
         "label": "Đặt hàng",
         "url": False,
     },
+    "about_us": {
+        "label": "Về chúng tôi",
+        "url": False,
+    },
 }
 
 

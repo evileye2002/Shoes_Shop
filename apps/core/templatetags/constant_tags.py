@@ -1,13 +1,12 @@
 from django import template
-from django.shortcuts import resolve_url
 
 register = template.Library()
 
 NAVBAR_LINKS = [
     {"url": "/", "label": "Trang chủ"},
-    {"url": "/products", "label": "Sản phẩm"},
+    {"url": "/products?o=newest", "label": "Sản phẩm mới"},
+    {"url": "/products", "label": "Sản phẩm nổi bật"},
     {"url": "/about_us", "label": "Về chúng tôi"},
-    {"url": "/contact", "label": "Liên hệ"},
 ]
 
 CONFIG = {
