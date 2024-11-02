@@ -15,6 +15,10 @@ class ShoeFilter(django_filters.FilterSet):
         field_name="options__sizes__price",
         lookup_expr="lte",
     )
+    rating = django_filters.NumberFilter(
+        field_name=("avg_review"),
+        lookup_expr="gte",
+    )
     brand = django_filters.ModelMultipleChoiceFilter(
         field_name="brand",
         queryset=Brand.objects.all(),
@@ -33,7 +37,7 @@ class ShoeFilter(django_filters.FilterSet):
 
     class Meta:
         model = Shoe
-        fields = ["minp", "maxp"]
+        fields = ["minp", "maxp", "rating"]
 
     def __init__(self, data=None, queryset=None, *, request=None, prefix=None):
         super().__init__(data, queryset, request=request, prefix=prefix)

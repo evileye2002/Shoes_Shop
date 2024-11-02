@@ -8,6 +8,7 @@ from apps.base_account.models import UserAddress
 
 
 class OrderForm(forms.ModelForm):
+
     class Meta:
         model = Order
         fields = ["payment_method", "shipping_address"]
@@ -20,6 +21,7 @@ class OrderForm(forms.ModelForm):
             self.fields["shipping_address"].queryset = UserAddress.objects.filter(
                 user=user
             )
+        self.fields["shipping_address"].required = True
 
         self.helper = FormHelper()
         self.helper.layout = Layout(

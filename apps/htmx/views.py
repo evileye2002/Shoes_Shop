@@ -423,8 +423,13 @@ def review_action(request):
     shoe_uuid = request.GET.get("shoe-uuid")
     quantity_detail = {}
     is_update_review = False
+    shoe = None
 
     if action == "get-form":
+        if not request.user.is_authenticated:
+            messages.error(request, "Đăng nhập để tiếp tục.")
+            return HttpResponse(status=204)
+
         shoe = Shoe.objects.filter(uuid=shoe_uuid)
         if not shoe.exists():
             messages.error(request, "Sản phẩm không tồn tại.")

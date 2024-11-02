@@ -10,7 +10,7 @@ NAVBAR_LINKS = [
 ]
 
 CONFIG = {
-    "web_name": "Xuân Minh Shoes",
+    "web_name": "Xuân Minh",
     "description": "Xuân Minh Shoes Description",
     "shortcute_icon": "/static/imgs/logo.svg",
     "copyright": "Xuân Minh Shoes. All Rights Reserved",

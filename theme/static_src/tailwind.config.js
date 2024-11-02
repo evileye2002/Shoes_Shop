@@ -3,7 +3,7 @@
  * https://saashammer.com/blog/render-django-form-with-tailwind-css-style/#jit
  */
 //#region Crispy Form TailwinCss fix
-const { error } = require("console");
+// const { error } = require("console");
 const Path = require("path");
 const pySitePackages = process.env.Site_Packages || "";
 
@@ -57,12 +57,6 @@ module.exports = {
     },
   },
   plugins: [
-    /**
-     * '@tailwindcss/forms' is the forms plugin that provides a minimal styling
-     * for forms. If you don't like it or have own styling for forms,
-     * comment the line below to disable '@tailwindcss/forms'.
-     */
-    // require('@tailwindcss/forms'),
     require("@tailwindcss/typography"),
     require("@tailwindcss/aspect-ratio"),
     require("flowbite/plugin")({

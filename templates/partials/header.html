@@ -12,9 +12,10 @@
           </svg>
         </button>
 
-        <a href="/" class="flex items-center">
+        <a href="/" class="flex items-center text-xl font-extrabold">
           {% comment %} <img src="{% static 'imgs/logo.svg' %}" class="hidden mr-3 h-9 lg:block" alt="Logo" /> {% endcomment %}
-          <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">{{ config_settings.web_name }}</span>
+          <span class="self-center text-transparent whitespace-nowrap bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text">{{ config_settings.web_name }}</span>
+          <span class="self-center text-gray-800 whitespace-nowrap ms-2 dark:text-white">Shoes</span>
         </a>
       </div>
 
@@ -79,9 +80,10 @@
   <div id="drawer-navigation" class="fixed top-0 left-0 z-40 h-screen p-4 overflow-y-auto transition-transform -translate-x-full bg-white w-80 dark:bg-gray-800" tabindex="-1" aria-labelledby="drawer-label">
     <div class="flex flex-col justify-between h-full">
       <div>
-        <a href="/" class="flex items-center">
-          <img src="{% static 'imgs/logo.svg' %}" class="h-6 mr-3" alt="Logo" />
-          <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">{{ config_settings.web_name }}</span>
+        <a href="/" class="flex items-center text-xl font-extrabold">
+          {% comment %} <img src="{% static 'imgs/logo.svg' %}" class="h-6 mr-3" alt="Logo" /> {% endcomment %}
+          <span class="self-center text-transparent whitespace-nowrap bg-gradient-to-r from-primary-500 to-primary-600 bg-clip-text">{{ config_settings.web_name }}</span>
+          <span class="self-center text-gray-800 whitespace-nowrap ms-2 dark:text-white">Shoes</span>
         </a>
         <button type="button" data-drawer-hide="drawer-navigation" aria-controls="drawer-navigation" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 absolute top-2.5 end-2.5 flex items-center justify-center dark:hover:bg-gray-600 dark:hover:text-white">
           <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
