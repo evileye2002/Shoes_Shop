@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
+from apps.core.utils import get_shipped_orders_queryset
 from .enums import UserGender
 
 
@@ -65,6 +66,9 @@ class UserCustom(AbstractUser):
         masked_phone = f"{first_three}*****{last_three}"
 
         return masked_phone
+
+    def get_shipped_orders(self):
+        return get_shipped_orders_queryset(self)
 
 
 class UserAddress(models.Model):

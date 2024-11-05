@@ -1,0 +1,21 @@
+<c-vars iconclass="bg-primary-600" />
+
+<button {{ attrs }} class="flex w-full px-4 py-3 text-start hover:bg-gray-100 dark:hover:bg-gray-700">
+  {% if image %}
+    <div class="flex-shrink-0 pe-3">
+      <div class="overflow-hidden rounded-full size-11">
+        <img class="w-full rounded-full" src="{{ media_url }}{{ image }}" alt="Nofication image" />
+      </div>
+      {% if slot_icon %}
+        <div class="absolute flex items-center justify-center size-6 -mt-5 {{ iconclass }} border border-white rounded-full ms-6 dark:border-gray-800">{{ slot_icon }}</div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  <div class="w-full">
+    <div class="text-gray-500 text-sm mb-1.5 dark:text-gray-400">{{ slot }}</div>
+    {% if footer %}
+      <div class="text-xs text-blue-600 dark:text-blue-500">{{ footer }}</div>
+    {% endif %}
+  </div>
+</button>

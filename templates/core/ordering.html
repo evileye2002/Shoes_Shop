@@ -22,10 +22,7 @@
                 {# prettier-ignore #}
                 <c-lineitem-card 
                   :orderitem="True"
-                  :item="data" 
-                  :option="data.shoe_option_size.shoe_option" 
-                  :shoe="data.shoe_option_size.shoe_option.shoe" 
-                  :itemimage="data.shoe_option_size.shoe_option.images.all.0">
+                  :item="data" >
                 </c-lineitem-card>
               {% endfor %}
             </div>

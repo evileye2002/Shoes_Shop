@@ -186,6 +186,7 @@ class Order(AbstractTimestamp):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        related_name="orders",
         verbose_name="Người dùng",
     )
     shipping_address = models.ForeignKey(

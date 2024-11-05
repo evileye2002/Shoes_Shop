@@ -1,6 +1,6 @@
 import json
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import update_session_auth_hash
 from django.contrib import messages
 from django.http.response import HttpResponse
@@ -224,7 +224,7 @@ from django.db.models import (
 
 from apps.core.filters import ShoeFilter
 from apps.core.enums import OrderStatus
-from apps.core.forms import ReviewForm
+from apps.core.forms import ReviewForm, OrderForm
 from apps.core.models import (
     Shoe,
     Order,
@@ -237,8 +237,9 @@ from apps.core.utils import (
     product_detail_handler,
     cart_item_total_price_handler,
     get_product_quantity_detail,
-    get_lineitem_queryset,
+    get_lineitem_queryset_by_seleted_item_uuids,
     get_shoes_queryset,
+    get_lineitem_queryset,
     get_paginator,
 )
 
@@ -345,7 +346,11 @@ def cart_item_action(request, uuid):
         selected_item_uuids = post_data.getlist("selected-item-uuid", [])
         change_total_price = item_checked == "on"
 
-        if item_quantity > 0 and item.shoe_option_size.quantity < item_quantity:
+        if (
+            item_quantity > 0
+            and item.shoe_option_size.quantity < item_quantity
+            and not action == "delete-cart-item"
+        ):
             messages.error(request, "Số lượng sản phẩm không hợp lệ.")
             return HttpResponse(status=204)
 
@@ -368,7 +373,9 @@ def cart_item_action(request, uuid):
             item.delete()
             messages.success(request, "Xóa sản phảm thành công.")
 
-    selected_items = get_lineitem_queryset(cart, selected_item_uuids)
+    selected_items = get_lineitem_queryset_by_seleted_item_uuids(
+        cart, selected_item_uuids
+    )
     cart_items_data = cart_item_total_price_handler(list(selected_items))
 
     context = {
@@ -407,7 +414,7 @@ def order_action(request):
             order.save()
             messages.success(request, "Hủy đơn hàng thành công.")
 
-        if action == "delivered" and order.status == OrderStatus.SHIPPED:
+        if action == "delivered" and order.status == OrderStatus.SHIPPING:
             order.status = OrderStatus.DELIVERED
             order.save()
             messages.success(request, "Xác nhận nhận hàng thành công.")
@@ -492,3 +499,46 @@ def product_reviews_list(request, uuid):
         "shoe_uuid": shoe.uuid,
     }
     return render(request, "htmx/product_reviews_list.html", context)
+
+
+def order_detail(request, uuid):
+    action = request.GET.get("action")
+    next = request.GET.get("next")
+    order = None
+    form = None
+    order_items = None
+    paginator = None
+    total_order_price = None
+
+    if action == "get-detail":
+        order = get_object_or_404(Order, uuid=uuid, user=request.user)
+        form = OrderForm(user=request.user, disabled=True, instance=order)
+        order_items = get_lineitem_queryset(order.items.all())
+        paginator = get_paginator(request, order_items, 5)
+        total_order_price = order.total_payment
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        action = post_data.get("action")
+        next = post_data.get("next")
+        order = get_object_or_404(Order, uuid=uuid, user=request.user)
+
+        if action == "delivered" and order.status == OrderStatus.SHIPPING:
+            order.status = OrderStatus.DELIVERED
+            order.save()
+            messages.success(request, "Xác nhận nhận hàng thành công.")
+
+        if next:
+            response = HttpResponse(status=204)
+            response.headers["HX-Redirect"] = next
+            return response
+
+    context = {
+        "form": form,
+        "action": action,
+        "next": next,
+        "order": order,
+        "order_items": paginator,
+        "total_order_price": total_order_price,
+    }
+    return render(request, "htmx/order_detail.html", context)

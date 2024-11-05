@@ -1,4 +1,5 @@
 from django import template
+from apps.core.utils import get_shipped_orders_queryset
 
 register = template.Library()
 

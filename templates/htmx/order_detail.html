@@ -1,0 +1,51 @@
+{% load util_tags crispy_forms_tags %}
+
+{% if action == 'get-detail' %}
+  <div id="order-detail-action" hx-swap-oob="true" class="flex justify-between">
+    <div class="flex items-center gap-2">
+      <h3 class="font-medium text-gray-800">Đơn hàng <span class="font-bold">#{{ order.uuid }}</span></h3>
+      <span class="border rounded-lg border-primary-300 font-medium text-primary-500 text-sm py-0.5 px-1">{{ order.get_status_display }}</span>
+    </div>
+    <form hx-post="{% url 'htmx_order_detail' order.uuid %}" hx-trigger="submit" hx-target="#order-detail-div">
+      {% csrf_token %}
+      <input type="text" class="hidden" name="next" value="{{ next }}" />
+      <c-button overideclass="!px-2" type="submit" name="action" value="delivered">Đã nhận được hàng</c-button>
+    </form>
+  </div>
+
+  <div id="order-detail-div" class="md:gap-6 md:flex lg:items-start xl:gap-8">
+    <div class="flex-none w-full mx-auto md:max-w-md">
+      <div class="space-y-6">
+        {% for item in order_items %}
+          {# prettier-ignore #}
+          <c-lineitem-card 
+          :orderitem="True"
+          :item="item" >
+        </c-lineitem-card>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="flex-1 max-w-4xl mx-auto mt-6 space-y-6 md:mt-0 lg:w-full">
+      <div class="p-4 space-y-4 bg-white border border-gray-200 rounded-lg shadow-sm dark:border-gray-700 dark:bg-gray-800">
+        <p class="text-xl font-semibold text-gray-900 dark:text-white">Đơn hàng</p>
+
+        <div class="space-y-4">
+          <div class="space-y-2">
+            <dl class="flex items-center justify-between gap-4 pt-2 border-t border-gray-200 dark:border-gray-700">
+              <dt class="text-base font-bold text-gray-900 dark:text-white">Tổng giá trị đơn hàng</dt>
+              <dd class="text-base font-bold text-gray-900 dark:text-white">{{ total_order_price|int_comma }}đ</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 mt-6 bg-white border border-gray-200 rounded-lg shadow-sm">
+        {% crispy form %}
+      </div>
+    </div>
+  </div>
+{% else %}
+  <div id="order-detail-action" hx-swap-oob="true" class="flex justify-between"></div>
+  <div id="order-detail-div" class="md:gap-6 md:flex lg:items-start xl:gap-8"></div>
+{% endif %}

@@ -15,6 +15,7 @@ class OrderForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user", None)
+        disabled = kwargs.pop("disabled", False)
         super().__init__(*args, **kwargs)
 
         if user:
@@ -22,6 +23,10 @@ class OrderForm(forms.ModelForm):
                 user=user
             )
         self.fields["shipping_address"].required = True
+
+        if disabled:
+            self.fields["payment_method"].disabled = True
+            self.fields["shipping_address"].disabled = True
 
         self.helper = FormHelper()
         self.helper.layout = Layout(
@@ -42,6 +47,8 @@ class OrderForm(forms.ModelForm):
                     Đặt hàng
                 </button>
             """
+                if not disabled
+                else ""
             ),
         )
 

@@ -18,7 +18,7 @@ from .utils import (
     cart_item_total_price_handler,
     get_shoes_queryset,
     get_brands_group_by_alphabet,
-    get_lineitem_queryset,
+    get_lineitem_queryset_by_seleted_item_uuids,
     get_product_quantity_detail,
     get_paginator,
 )
@@ -105,7 +105,7 @@ def product(request, uuid):
 
 def shopping_cart(request):
     cart, _ = ShoppingCart.objects.get_or_create(user=request.user)
-    items_data = get_lineitem_queryset(cart, select_related=True)
+    items_data = get_lineitem_queryset_by_seleted_item_uuids(cart, select_related=True)
 
     context = {
         "items_data": items_data,
@@ -119,7 +119,9 @@ def ordering(request):
 
     shipping_fee = 15000
     form = OrderForm(user=request.user)
-    selected_items = get_lineitem_queryset(cart, selected_item_uuids, True)
+    selected_items = get_lineitem_queryset_by_seleted_item_uuids(
+        cart, selected_item_uuids, True
+    )
     cart_items_data = cart_item_total_price_handler(selected_items)
 
     if len(cart_items_data["selected_items"]) == 0:

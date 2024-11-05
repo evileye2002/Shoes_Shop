@@ -16,9 +16,8 @@ from django.db.models import (
 )
 from django.db.models.functions import Coalesce
 from apps.attribute.models import Brand
-from .models import Shoe, ShoeOptionSize
-from .models import LineItem, Order, Review, ShoeOptionImage
 from .enums import OrderStatus, PRODUCT_ORDER_CHOICES
+
 
 ITEM_PER_PAGE = 12
 PAGE_QUERYSTRING = "page"
@@ -47,6 +46,8 @@ def get_paginator(request, queryset, item_per_page=ITEM_PER_PAGE):
 
 
 def get_product_quantity_detail(shoe, user=None):
+    from .models import Order
+
     delivered_orders = Order.objects.filter(
         items__shoe_option_size__shoe_option__shoe=shoe,
         status=OrderStatus.DELIVERED,
@@ -58,6 +59,8 @@ def get_product_quantity_detail(shoe, user=None):
     allow_user_review = False
 
     if user:
+        from .models import Review
+
         time_threshold = timezone.now() - timedelta(hours=24)
         user_orders = delivered_orders.filter(user=user, updated_at__gte=time_threshold)
         user_reviews = Review.objects.filter(
@@ -161,6 +164,8 @@ def cart_item_total_price_handler(selected_items):
 
 
 def get_shoes_queryset(request):
+    from .models import Shoe, ShoeOptionImage, ShoeOptionSize
+
     ordering = request.GET.get("o")
     order_by = PRODUCT_ORDER_CHOICES.get(ordering, "-avg_review")
 
@@ -213,24 +218,49 @@ def get_brands_group_by_alphabet():
     return {"brands_alphabet": brands_alphabet}
 
 
-def get_lineitem_queryset(cart, selected_item_uuids=None, select_related=False):
+def get_lineitem_queryset(queryset):
+    from .models import ShoeOptionImage
+
+    first_image_subquery = ShoeOptionImage.objects.filter(
+        shoe_option=OuterRef("shoe_option_size__shoe_option__pk")
+    ).values("image")[:1]
+
+    queryset = queryset.annotate(
+        shoe_uuid=F("shoe_option_size__shoe_option__shoe__uuid"),
+        shoe_name=F("shoe_option_size__shoe_option__shoe__name"),
+        option_size=F("shoe_option_size__size__name"),
+        option_color=F("shoe_option_size__shoe_option__color__name"),
+        option_quantity=F("shoe_option_size__quantity"),
+        first_image_path=Subquery(first_image_subquery),
+    ).select_related("shoe_option_size")
+
+    return queryset
+
+
+def get_lineitem_queryset_by_seleted_item_uuids(
+    cart, selected_item_uuids=None, select_related=False
+):
+    from .models import LineItem
+
     if selected_item_uuids is not None:
         queryset = LineItem.objects.filter(cart=cart, uuid__in=selected_item_uuids)
     else:
         queryset = LineItem.objects.filter(cart=cart)
 
     if select_related:
-        first_image_subquery = ShoeOptionImage.objects.filter(
-            shoe_option=OuterRef("shoe_option_size__shoe_option__pk")
-        ).values("image")[:1]
-
-        queryset = queryset.annotate(
-            shoe_uuid=F("shoe_option_size__shoe_option__shoe__uuid"),
-            shoe_name=F("shoe_option_size__shoe_option__shoe__name"),
-            option_size=F("shoe_option_size__size__name"),
-            option_color=F("shoe_option_size__shoe_option__color__name"),
-            option_quantity=F("shoe_option_size__quantity"),
-            first_image_path=Subquery(first_image_subquery),
-        ).select_related("shoe_option_size")
+        queryset = get_lineitem_queryset(queryset)
 
     return queryset
+
+
+def get_shipped_orders_queryset(user):
+    from .models import ShoeOptionImage
+
+    first_image_subquery = ShoeOptionImage.objects.filter(
+        shoe_option__shoe=OuterRef("pk")
+    ).values("image")[:1]
+
+    orders = user.orders.filter(status=OrderStatus.SHIPPING).annotate(
+        first_image_path=Subquery(first_image_subquery),
+    )
+    return orders

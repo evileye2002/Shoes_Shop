@@ -9,7 +9,7 @@ class PaymentMethods(models.TextChoices):
 class OrderStatus(models.TextChoices):
     PENDING = "pending", "Đang chờ"
     PREPARING = "preparing", "Đang chuẩn bị"
-    SHIPPED = "shipped", "Đã vận chuyển"
+    SHIPPING = "shipping", "Đang vận chuyển"
     DELIVERED = "delivered", "Đã nhận"
     CANNCELED = "cannceled", "Đã huỷ đơn"
 

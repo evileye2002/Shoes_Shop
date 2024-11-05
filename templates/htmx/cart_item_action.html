@@ -81,5 +81,11 @@
 {% endif %}
 
 {% if delete_item %}
-  <div id="cart-item-indicator" hx-swap-oob="true" class="absolute inline-flex items-center justify-center text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full size-5 -top-1 -end-1 dark:border-gray-900">{{ user.carts.items.all.count|default:0 }}</div>
+  {% with user_cart_items_count=user.carts.items.all.count|default:0 %}
+    <div hx-swap-oob="true" id="cart-item-indicator" class="{% if user_cart_items_count == 0 %}hidden{% endif %}">
+      {% if user_cart_items_count > 0 %}
+        <div class="absolute inline-flex items-center justify-center text-xs font-bold text-white bg-red-500 border-2 border-white rounded-full size-5 -top-1 -end-1 dark:border-gray-900">{{ user_cart_items_count }}</div>
+      {% endif %}
+    </div>
+  {% endwith %}
 {% endif %}

@@ -30,4 +30,9 @@ urlpatterns = [
         views.product_reviews_list,
         name="htmx_product_reviews_list",
     ),
+    path(
+        "order_detail/<str:uuid>",
+        views.order_detail,
+        name="htmx_order_detail",
+    ),
 ]

@@ -6,7 +6,7 @@ from .models import Order, OrderStatus
 
 @receiver(post_save, sender=Order)
 def update_item_quantities_on_delivery(sender, instance, **kwargs):
-    if instance.status == OrderStatus.SHIPPED:
+    if instance.status == OrderStatus.SHIPPING:
         for item in instance.items.all():
             item_quantity = item.quantity
             item.shoe_option_size.quantity = F("quantity") - item_quantity
